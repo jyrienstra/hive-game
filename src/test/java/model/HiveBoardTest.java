@@ -22,7 +22,7 @@ class HiveBoardTest {
     }
 
     @Test
-    void getNeighbourLocations(){
+    void testGetNeighbourLocationsForCell1(){
         HiveBoard hiveBoard = new HiveBoard();
         ArrayList<HiveLocation> n = hiveBoard.getNeighbourLocations(1, -2);
         assertTrue(n.size() == 6);
@@ -34,6 +34,23 @@ class HiveBoardTest {
             if(l.getQ() == 0 && l.getR() == -2) validNeighbours++;
             if(l.getQ() == 1 && l.getR() == -3) validNeighbours++;
             if(l.getQ() == 2 && l.getR() == -3) validNeighbours++;
+        }
+        assertTrue(validNeighbours == 6);
+    }
+
+    @Test
+    void testGetNeighbourLocationsForCell2(){
+        HiveBoard hiveBoard = new HiveBoard();
+        ArrayList<HiveLocation> n = hiveBoard.getNeighbourLocations(0, 1);
+        assertTrue(n.size() == 6);
+        int validNeighbours = 0;
+        for(HiveLocation l : n){
+            if(l.getQ() == 0 && l.getR() == 2) validNeighbours++;
+            if(l.getQ() == 1 && l.getR() == 1) validNeighbours++;
+            if(l.getQ() == 1 && l.getR() == 0) validNeighbours++;
+            if(l.getQ() == 0 && l.getR() == 0) validNeighbours++;
+            if(l.getQ() == -1 && l.getR() == 1) validNeighbours++;
+            if(l.getQ() == -1 && l.getR() == 2) validNeighbours++;
         }
         assertTrue(validNeighbours == 6);
     }

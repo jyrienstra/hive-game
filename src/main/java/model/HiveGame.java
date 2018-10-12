@@ -1,5 +1,6 @@
 package model;
 
+import java.lang.reflect.Executable;
 import java.util.ArrayList;
 import java.util.Stack;
 
@@ -145,20 +146,54 @@ public class HiveGame implements Hive {
         }
     }
 
-    /**
-     * Find a valid path from fromCell to toCell.
-     * If maxCellMove is reached we backtrack and try another solution.
-     * If no result is found a illegalMove is thrown
-     * @param maxCellMove
-     */
-    public void findValidPath(int fromQ, int fromR, int toQ, int toR, int maxCellMove) throws IllegalMove {
-        ArrayList<HiveLocation> neighboursAtThisCell = hiveBoard.getNeighbourLocations(fromQ, fromR);
-
-        // Voor elke neighbour check isValidMove en isValidShift
+    public boolean isValidShift(int fromQ, int fromR, int toQ, int toR){
+        try {
+            HiveCell fromCell = hiveBoard.getCellAt(fromQ, fromR);
+            HiveCell toCell = hiveBoard.getCellAt(toQ, toR);
+            if (toCell == null) {
+                toCell = new HiveCell(toQ, toR);
+                hiveBoard.addHiveCell(toCell);
+            }
+            isValidShift(fromCell, toCell);
+        } catch (IllegalMove illegalMove) {
+            return false;
+        }
+        return true;
     }
 
-//    e. Elk van de types stenen heeft zijn eigen manier van verplaatsen.
-    public void move(int fromQ, int fromR, int toQ, int toR) throws IllegalMove {
+    public ArrayList<HiveLocation> getValidPath(int fromQ, int fromR, int toQ, int toR, int maxCellMove) throws IllegalMove {
+        ArrayList<HiveLocation> neighbours = hiveBoard.getNeighbourLocations(fromQ, fromR);
+        ArrayList<HiveLocation> validPath = null;
+        for(HiveLocation n: neighbours){
+            if (validPath != null) return validPath;
+            validPath = findValidPath(fromQ, fromR, n.getQ(), n.getR(), toQ, toR, maxCellMove, new ArrayList<>());
+        }
+        return validPath;
+    }
+
+    public ArrayList<HiveLocation> findValidPath(int currFromQ, int currFromR, int currToQ, int currToR, int endQ, int endR, int maxCellMove, ArrayList<HiveLocation> path) throws IllegalMove {
+        if (isValidShift(currFromQ, currFromR, currToQ, currToR)){
+            // Simulate shift
+            path.add(new HiveLocation(currToQ, currToR));
+            currFromQ = currToQ;
+            currFromR = currToR;
+        }else{
+            return null;
+        }
+        if (currFromQ == endQ && currFromR == endR) return path;
+        if (path.size() >= maxCellMove) return null;
+
+        ArrayList<HiveLocation> neighbours = hiveBoard.getNeighbourLocations(currFromQ, currFromR);
+        for(HiveLocation n: neighbours){
+            currToQ = n.getQ();
+            currToR = n.getR();
+            if(findValidPath(currFromQ, currFromR, currToQ, currToR, endQ, endR, maxCellMove, path) != null) return path;
+            path.remove(new HiveLocation(currToQ, currToR));
+        }
+        return null;
+    }
+
+    public void throwIllegalMoveWhenMoveIsNotValid(int fromQ, int fromR, int toQ, int toR) throws IllegalMove{
         HiveCell fromCell = hiveBoard.getCellAt(fromQ, fromR);
         if (fromCell == null) throw new IllegalMove("Er bestaat geen steen met deze coordinaten");
         if (fromCell.getPlayerTilesAtCell().isEmpty()) throw new IllegalMove("Er bestaat geen steen met deze coordinaten");
@@ -166,44 +201,54 @@ public class HiveGame implements Hive {
         if (!hiveBoard.playerHasPlayedQueenBee(currentPlayer)) throw new IllegalMove("Een speler mag pas stenen verplaatsen als zijn bijenkoningin gespeeld is");
         if (!hiveBoard.hasNeighbourPlayerTileBesidesCoordinate(toQ, toR)) throw new IllegalMove("Een steen moet na het verplaatsen in contact zijn met minstens één andere steen");
         if (!hiveBoard.allPlayerTilesStillConnectedAfterMoving(fromQ, fromR, toQ, toR)) throw new IllegalMove("Een steen mag niet verplaatst worden als er door het weghalen van de steen twee niet onderling verbonden groepen stenen ontstaan.");
+    }
 
-        // Haal toCell op en als deze nog niet bestaat voeg deze toe aan het bord (addHiveCell voegt de buren automatisch toe)
+    public void makeMove(int fromQ, int fromR, int toQ, int toR){
+        HiveCell fromCell = hiveBoard.getCellAt(fromQ, fromR);
         HiveCell toCell = hiveBoard.getCellAt(toQ, toR);
         if (toCell == null) {
             toCell = new HiveCell(toQ, toR);
             hiveBoard.addHiveCell(toCell);
         }
         HivePlayerTile fromHivePlayerTile = fromCell.getTopPlayerTileFromCell();
+        toCell.addPlayerTile(fromCell.getTopPlayerTileFromCell());
+        fromCell.removePlayerTile(fromCell.getTopPlayerTileFromCell());
+        switchPlayer();
+    }
 
-        if (fromHivePlayerTile.getTile().equals(Tile.BEETLE)){
-            // 7a Een kever verplaatst zich door precies één keer te verschuiven.
-            findValidPath(fromQ, fromR, toQ, toR, 1);
+//    e. Elk van de types stenen heeft zijn eigen manier van verplaatsen.
+    public void move(int fromQ, int fromR, int toQ, int toR) throws IllegalMove {
+        throwIllegalMoveWhenMoveIsNotValid(fromQ, fromR, toQ,  toR);
+
+        HiveCell fromCell = hiveBoard.getCellAt(fromQ, fromR);
+        HiveCell toCell = hiveBoard.getCellAt(toQ, toR);
+        HivePlayerTile fromHivePlayerTile = fromCell.getTopPlayerTileFromCell();
+        ArrayList<HiveLocation> validPath = null;
+        switch (fromHivePlayerTile.getTile()){
+            case BEETLE:
+                validPath = getValidPath(fromQ, fromR, toQ, toR, 1);
+                break;
+            case QUEEN_BEE:
+                if (toCell != null && !toCell.getPlayerTilesAtCell().isEmpty()) throw new IllegalMove("The QUEEN_BEE can only be moved to an empty cell");
+                validPath = getValidPath(fromQ, fromR, toQ, toR, 1);
+                break;
+            case SOLDIER_ANT:
+                validPath = getValidPath(fromQ, fromR, toQ, toR, Integer.MAX_VALUE);
         }
+        if (validPath == null) throw new IllegalMove("We could not find a valid path to toQ,toR");
 
-
-
-//        // Bereken pad van fromCell naar toCell
-//        // Elke buur bij langs gaan en kijken of het isValidTile en isValidMove is
-//
-//        // Check of schuiven mag
-//        isValidShift(fromCell, toCell);
-//
-//        if (fromHivePlayerTile.getTile().equals(Tile.BEETLE)){
-//            // 7a Een kever verplaatst zich door precies één keer te verschuiven.
-//
-//        }
-//        if (fromHivePlayerTile.getTile().equals(Tile.QUEEN_BEE)){
-//            // 7e. bijenkoningin verplaatst zich door precies één keer te verschuiven.
-//            // 7b. De bijenkoningin mag alleen verplaatst worden naar een leeg veld.
-//            if (toCell.getPlayerTilesAtCell().size() > 0) throw new IllegalMove("De bijenkoningin mag alleen verplaatst worden naar een leeg veld.");
-//        }
-//
-//
-//        // Move Cell
-//        toCell.addPlayerTile(fromCell.getTopPlayerTileFromCell());
-//        fromCell.removePlayerTile(fromCell.getTopPlayerTileFromCell());
-//
-//        switchPlayer();
+        // Make shifts
+        int sFromQ = fromQ;
+        int sFromR = fromR;
+        int sToQ;
+        int sToR;
+        for (HiveLocation hiveLocation : validPath){
+            sToQ = hiveLocation.getQ();
+            sToR = hiveLocation.getR();
+            makeMove(sFromQ, sFromR, sToQ, sToR);
+            sFromQ = sToQ;
+            sFromR = sToR;
+        }
     }
 
     public void pass() throws IllegalMove {
