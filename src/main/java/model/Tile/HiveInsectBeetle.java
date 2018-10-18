@@ -1,6 +1,7 @@
 package model.Tile;
 
 import model.*;
+import model.Tile.Exceptions.IllegalMoveBeetle;
 
 import java.util.ArrayList;
 
@@ -17,9 +18,9 @@ public class HiveInsectBeetle implements HiveInsect{
     }
 
     @Override
-    public ArrayList<HiveLocation> getValidPath(int fromQ, int fromR, int toQ, int toR) throws Hive.IllegalMove {
+    public ArrayList<HiveLocation> getValidPath(int fromQ, int fromR, int toQ, int toR) throws IllegalMoveBeetle {
         ArrayList<HiveLocation> validPath  = getValidPath(fromQ, fromR, toQ, toR, 1);
-        if (validPath == null) throw new Hive.IllegalMove("Could not find a valid path for the Beetle to Q = " + toQ + " and R = " + toR);
+        if (validPath == null) throw new IllegalMoveBeetle("Could not find a valid path for the Beetle to Q = " + toQ + " and R = " + toR);
 
         return validPath;
     }
