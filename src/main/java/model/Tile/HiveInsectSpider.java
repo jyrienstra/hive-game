@@ -59,8 +59,11 @@ public class HiveInsectSpider implements HiveInsect {
         for(HiveLocation n: neighbours){
             currToQ = n.getQ();
             currToR = n.getR();
-            if(findValidPath(currFromQ, currFromR, currToQ, currToR, endQ, endR, maxCellMove, path) != null) return path;
-            path.remove(new HiveLocation(currToQ, currToR));
+            HiveLocation toLocation = new HiveLocation(currToQ, currToR);
+            if (!path.contains(toLocation)) {
+                if (findValidPath(currFromQ, currFromR, currToQ, currToR, endQ, endR, maxCellMove, path) != null) return path;
+                path.remove(new HiveLocation(currToQ, currToR));
+            }
         }
         return null;
     }
