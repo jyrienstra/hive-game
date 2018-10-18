@@ -1,9 +1,14 @@
 package model.Tile;
 
 import model.*;
+import model.Tile.Exceptions.IllegalMoveQueenBee;
 
 import java.util.ArrayList;
 
+/**
+ * a. De bijenkoningin verplaatst zich door precies één keer te verschuiven.
+ * b. De bijenkoningin mag alleen verplaatst worden naar een leeg veld.
+ */
 public class HiveInsectQueenBee implements HiveInsect {
     HiveGame hiveGame;
     HiveBoard hiveBoard;
@@ -14,17 +19,17 @@ public class HiveInsectQueenBee implements HiveInsect {
     }
 
     @Override
-    public ArrayList<HiveLocation> getValidPath(int fromQ, int fromR, int toQ, int toR) throws Hive.IllegalMove {
+    public ArrayList<HiveLocation> getValidPath(int fromQ, int fromR, int toQ, int toR) throws IllegalMoveQueenBee {
         HiveCell toCell = hiveBoard.getCellAt(toQ, toR);
-        if (toCell != null && !toCell.getPlayerTilesAtCell().isEmpty()) throw new Hive.IllegalMove("The QUEEN_BEE can only be moved to an empty cell");
+        if (toCell != null && !toCell.getPlayerTilesAtCell().isEmpty()) throw new IllegalMoveQueenBee("The QUEEN_BEE can only be moved to an empty cell");
 
         ArrayList<HiveLocation> validPath  = getValidPath(fromQ, fromR, toQ, toR, 1);
-        if (validPath == null) throw new Hive.IllegalMove("Could not find a valid path for the QueenBee to Q = " + toQ + " and R = " + toR);
+        if (validPath == null) throw new IllegalMoveQueenBee("Could not find a valid path for the QueenBee to Q = " + toQ + " and R = " + toR);
 
         return validPath;
     }
 
-    public ArrayList<HiveLocation> getValidPath(int fromQ, int fromR, int toQ, int toR, int maxCellMove) throws Hive.IllegalMove {
+    public ArrayList<HiveLocation> getValidPath(int fromQ, int fromR, int toQ, int toR, int maxCellMove) {
         ArrayList<HiveLocation> neighbours = hiveBoard.getNeighbourLocations(fromQ, fromR);
         ArrayList<HiveLocation> validPath = null;
         for(HiveLocation n: neighbours){
@@ -34,7 +39,7 @@ public class HiveInsectQueenBee implements HiveInsect {
         return validPath;
     }
 
-    public ArrayList<HiveLocation> findValidPath(int currFromQ, int currFromR, int currToQ, int currToR, int endQ, int endR, int maxCellMove, ArrayList<HiveLocation> path) throws Hive.IllegalMove {
+    public ArrayList<HiveLocation> findValidPath(int currFromQ, int currFromR, int currToQ, int currToR, int endQ, int endR, int maxCellMove, ArrayList<HiveLocation> path) {
         if (hiveGame.isValidShift(currFromQ, currFromR, currToQ, currToR)){
             path.add(new HiveLocation(currToQ, currToR)); // Simulate shift
             currFromQ = currToQ;
