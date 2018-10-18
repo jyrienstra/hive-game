@@ -345,32 +345,47 @@ class HiveGameTest {
         });
     }
 
+    // Expect true when calling isValidShift When the toCell is a neighbour of the fromCell
     @Test
-    void testGetValidPathIsValidWhenMovingOneTileFurtherFromStartPostition() throws Hive.IllegalMove {
+    void testIsValidShiftSucceedsWhenShiftIsValid() throws Hive.IllegalMove {
         HiveGame hiveGame = new HiveGame();
         hiveGame.play(Hive.Tile.QUEEN_BEE, 0,0); // wit
         hiveGame.play(Hive.Tile.QUEEN_BEE, 1, 0); // zwart
         hiveGame.play(Hive.Tile.BEETLE, -1, 1); // wit
         hiveGame.play(Hive.Tile.SOLDIER_ANT, 2, 0); // zwart
-        ArrayList<HiveLocation> validPath = hiveGame.getValidPath(-1,1,0,1,1); // beelte max depth is
-        assertTrue(validPath.size() == 1);
-        assertTrue(validPath.get(0).equals(new HiveLocation(0,1)));
+        boolean valid = hiveGame.isValidShift(0,-1,1,-1);
+        assertTrue(valid == true);
+        boolean valid2 = hiveGame.isValidShift(1,1,2,1);
+        assertTrue(valid2 == true);
     }
 
+    // Expect false when calling isValidShift When the toCell is not a neighbour of the fromCell
     @Test
-    void testGetValidPathIsValidWhenMovingTwoTilesFurtherFromStartPostition() throws Hive.IllegalMove {
+    void testIsValidShiftFailsWhenToCellIsNotANeighbourOfFromCell() throws Hive.IllegalMove {
         HiveGame hiveGame = new HiveGame();
         hiveGame.play(Hive.Tile.QUEEN_BEE, 0,0); // wit
         hiveGame.play(Hive.Tile.QUEEN_BEE, 1, 0); // zwart
         hiveGame.play(Hive.Tile.BEETLE, -1, 1); // wit
         hiveGame.play(Hive.Tile.SOLDIER_ANT, 2, 0); // zwart
-        ArrayList<HiveLocation> validPathDepth1 = hiveGame.getValidPath(-1,1,1,1,1); // beelte max depth is
-        assertTrue(validPathDepth1 == null); // het kost minstens twee stappen dus dit zou fout moeten gaan
-        ArrayList<HiveLocation> validPathDepth2 = hiveGame.getValidPath(-1,1,1,1,2); // beelte max depth is
-        // Enigste valid path is eerst move naar 0,1 en dan naar 1,1
-        assertTrue(validPathDepth2 != null);
-        assertTrue(validPathDepth2.get(0).equals(new HiveLocation(0,1)));
-        assertTrue(validPathDepth2.get(1).equals(new HiveLocation(1,1)));
+        boolean valid = hiveGame.isValidShift(0,-1,2,-1); // probeer een neppe cel, dit moet kunnen
+        assertTrue(valid == false);
     }
+
+
+    // Expect false when calling isValidShift When the toCell and fromCell have 0 neighbours in common, which means the tile will be lose when shifting
+    @Test
+    void testIsValidShiftFailsWhenToCellAndFromCellHaveZeroNeighboursInCommon() throws Hive.IllegalMove {
+        HiveGame hiveGame = new HiveGame();
+        hiveGame.play(Hive.Tile.QUEEN_BEE, 0,0); // wit
+        hiveGame.play(Hive.Tile.QUEEN_BEE, 1, 0); // zwart
+        hiveGame.play(Hive.Tile.BEETLE, -1, 1); // wit
+        hiveGame.play(Hive.Tile.SOLDIER_ANT, 2, 0); // zwart
+        boolean valid = hiveGame.isValidShift(0,-1,1,-2); // probeer een neppe cel, dit moet kunnen
+        assertTrue(valid == false);
+    }
+
+    // When the toCell and fromCell have >1 neighbours in common and we can't shift the tile because of a stack at a certain cell that is to high.
+    //@todo
+
 
 }
