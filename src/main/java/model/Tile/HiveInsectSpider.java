@@ -1,14 +1,15 @@
 package model.Tile;
 
 import model.*;
+import model.Tile.Exceptions.IllegalMoveSpider;
 
 import java.util.ArrayList;
 
 /**
- * Een spin verplaatst zich door precies drie keer te verschuiven.
- * Een spin mag zich niet verplaatsen naar het veld waar hij al staat.
- * Een spin mag alleen verplaatst worden over en naar lege velden.
- * Een spin mag tijdens zijn verplaatsing geen stap maken naar een veld waar hij tijdens de verplaatsing al is geweest.
+ * a Een spin verplaatst zich door precies drie keer te verschuiven.
+ * b Een spin mag zich niet verplaatsen naar het veld waar hij al staat.
+ * c Een spin mag alleen verplaatst worden over en naar lege velden.
+ * d Een spin mag tijdens zijn verplaatsing geen stap maken naar een veld waar hij tijdens de verplaatsing al is geweest.
  */
 public class HiveInsectSpider implements HiveInsect {
     HiveGame hiveGame;
@@ -20,14 +21,14 @@ public class HiveInsectSpider implements HiveInsect {
     }
 
     @Override
-    public ArrayList<HiveLocation> getValidPath(int fromQ, int fromR, int toQ, int toR) throws Hive.IllegalMove {
+    public ArrayList<HiveLocation> getValidPath(int fromQ, int fromR, int toQ, int toR) throws IllegalMoveSpider {
         ArrayList<HiveLocation> validPath  = getValidPath(fromQ, fromR, toQ, toR, 3);
-        if (validPath == null) throw new Hive.IllegalMove("Could not find a valid path for the Spider Ant to Q = " + toQ + " and R = " + toR);
+        if (validPath == null) throw new IllegalMoveSpider("Could not find a valid path for the Spider Ant to Q = " + toQ + " and R = " + toR);
         return validPath;
     }
 
 
-    public ArrayList<HiveLocation> getValidPath(int fromQ, int fromR, int toQ, int toR, int maxCellMove) throws Hive.IllegalMove {
+    public ArrayList<HiveLocation> getValidPath(int fromQ, int fromR, int toQ, int toR, int maxCellMove) {
         ArrayList<HiveLocation> neighbours = hiveBoard.getNeighbourLocations(fromQ, fromR);
         ArrayList<HiveLocation> validPath = null;
         for(HiveLocation n: neighbours){
@@ -37,7 +38,7 @@ public class HiveInsectSpider implements HiveInsect {
         return validPath;
     }
 
-    public ArrayList<HiveLocation> findValidPath(int currFromQ, int currFromR, int currToQ, int currToR, int endQ, int endR, int maxCellMove, ArrayList<HiveLocation> path) throws Hive.IllegalMove {
+    public ArrayList<HiveLocation> findValidPath(int currFromQ, int currFromR, int currToQ, int currToR, int endQ, int endR, int maxCellMove, ArrayList<HiveLocation> path) {
         HiveCell currCell = hiveBoard.getCellAt(currToQ, currToR);
         if (currCell.getPlayerTilesAtCell().size() > 0) return null; // 10b 10c Een spin mag zich niet verplaatsen naar het veld waar hij al staat. Een spin mag alleen verplaatst worden over en naar lege velden.
         if (path.contains(new HiveLocation(currToQ, currToR))) return null; // 10d Een spin mag tijdens zijn verplaatsing geen stap maken naar een veld waar hij tijdens de verplaatsing al is geweest.
