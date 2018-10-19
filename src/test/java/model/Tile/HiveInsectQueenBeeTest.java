@@ -61,4 +61,38 @@ class HiveInsectQueenBeeTest {
             ArrayList<HiveLocation> validPath2 = hiveInsectQueenBee.getValidPath(0,0,-1,1);
         });
     }
+
+    // Test of alle shifts vanuit getValidPath wel validShifts zijn, sinds de Queenbee zich verplaatst door te schuiven
+    @Test
+    void testGetValidPathContainsValidShifts() throws Hive.IllegalMove {
+        HiveGame hiveGame = new HiveGame();
+        HiveBoard hiveBoard = hiveGame.getBoard();
+        hiveGame.play(Hive.Tile.QUEEN_BEE, 2, -1); // wit
+        hiveGame.play(Hive.Tile.QUEEN_BEE, 1,0); // zwart
+        hiveGame.play(Hive.Tile.SOLDIER_ANT, 3, -1); // wit
+        hiveGame.play(Hive.Tile.BEETLE, 1, 1); // zwart
+        HiveInsectQueenBee hiveInsectQueenBee = new HiveInsectQueenBee(hiveGame, hiveBoard);
+        assertThrows(IllegalMoveQueenBee.class, ()->{
+            // Geen valide shift terwijl queen bee regels wel goed zijn, dus shiften kan niet
+            ArrayList<HiveLocation> validPath = hiveInsectQueenBee.getValidPath(1,0,2,0);
+        });
+    }
+
+    // Test of alle shifts vanuit getValidPath wel validShifts zijn, sinds de Queenbee zich verplaatst door te schuiven
+    @Test
+    void testGetValidPathContainsValidShifts2() throws Hive.IllegalMove {
+        HiveGame hiveGame = new HiveGame();
+        HiveBoard hiveBoard = hiveGame.getBoard();
+        hiveGame.play(Hive.Tile.BEETLE, 3, -1); // wit
+        hiveGame.play(Hive.Tile.QUEEN_BEE, 3, 0); // zwart
+        hiveGame.play(Hive.Tile.BEETLE, 2, -1); // wit
+        hiveGame.play(Hive.Tile.SOLDIER_ANT, 2, 1); // zwart
+        hiveGame.play(Hive.Tile.QUEEN_BEE, 1, 0); // wit
+        HiveInsectQueenBee hiveInsectQueenBee = new HiveInsectQueenBee(hiveGame, hiveBoard);
+        assertThrows(IllegalMoveQueenBee.class, ()->{
+           // Steen komt los wanneer we dit doen
+            ArrayList<HiveLocation> validPath = hiveInsectQueenBee.getValidPath(1,0,1,1);
+        });
+        assertTrue(!hiveGame.isValidShift(1,0,1,1));
+    }
 }

@@ -68,4 +68,24 @@ class HiveInsectSoldierAntTest {
             assertTrue(cell.getPlayerTilesAtCell().size() == 0);
         }
     }
+
+    // Test of alle shifts vanuit getValidPath wel validShifts zijn, sinds de soldatenmier verplaatst door te schuiven
+    @Test
+    void testGetValidPathContainsValidShifts() throws Hive.IllegalMove {
+        HiveGame hiveGame = new HiveGame();
+        HiveBoard hiveBoard = hiveGame.getBoard();
+        hiveGame.play(Hive.Tile.QUEEN_BEE, 0,0); // wit
+        hiveGame.play(Hive.Tile.QUEEN_BEE, 1, 0); // zwart
+        hiveGame.play(Hive.Tile.BEETLE, -1, 1); // wit
+        hiveGame.play(Hive.Tile.SOLDIER_ANT, 2, 0); // zwart
+        HiveInsectSoldierAnt hiveInsectSoldierAnt = new HiveInsectSoldierAnt(hiveGame, hiveBoard);
+        ArrayList<HiveLocation> validPath = hiveInsectSoldierAnt.getValidPath(3,0,-1,0);
+        int fromQ = 3;
+        int fromR = 0;
+        for(HiveLocation l : validPath){
+            int toQ = l.getQ();
+            int toR = l.getR();
+            assertTrue(hiveGame.isValidShift(fromQ, fromR, toQ, toR));
+        }
+    }
 }

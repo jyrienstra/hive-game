@@ -92,4 +92,23 @@ class HiveInsectSpiderTest {
         }
     }
 
+    // Test of alle shifts vanuit getValidPath wel validShifts zijn, sinds de spin verplaatst door te schuiven
+    @Test
+    void testGetValidPathContainsValidShifts() throws Hive.IllegalMove {
+        HiveGame hiveGame = new HiveGame();
+        HiveBoard hiveBoard = hiveGame.getBoard();
+        hiveGame.play(Hive.Tile.QUEEN_BEE, 0, 0); // wit
+        hiveGame.play(Hive.Tile.QUEEN_BEE, 1, 0); // zwart
+        hiveGame.play(Hive.Tile.BEETLE, -1, 1); // wit
+        hiveGame.play(Hive.Tile.SPIDER, 2, 0); // zwart
+        HiveInsectSpider hiveInsectSpider = new HiveInsectSpider(hiveGame, hiveBoard);
+        ArrayList<HiveLocation> validPath = hiveInsectSpider.getValidPath(0, -1, 3, -1);
+        int fromQ = 3;
+        int fromR = 0;
+        for(HiveLocation l : validPath){
+            int toQ = l.getQ();
+            int toR = l.getR();
+            assertTrue(hiveGame.isValidShift(fromQ, fromR, toQ, toR));
+        }
+    }
 }
