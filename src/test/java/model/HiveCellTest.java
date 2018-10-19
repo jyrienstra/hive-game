@@ -1,5 +1,7 @@
 package model;
 
+import model.Tile.HiveInsect;
+import model.Tile.HiveInsectGrasshopper;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
@@ -8,8 +10,10 @@ import static org.junit.jupiter.api.Assertions.*;
 class HiveCellTest {
     @Test
     void testSetCoordinateQ() throws NoSuchFieldException, IllegalAccessException {
+        HiveGame hiveGame = new HiveGame();
+        HiveBoard hiveBoard = hiveGame.getBoard();
         HivePlayer hivePlayer = new HivePlayer(Hive.Player.WHITE);
-        HivePlayerTile tile1 = new HivePlayerTile(hivePlayer, Hive.Tile.GRASSHOPPER);
+        HivePlayerTile tile1 = new HivePlayerTile(hivePlayer, new HiveInsectGrasshopper(hiveGame, hiveBoard));
         HiveCell hiveCell = new HiveCell(tile1, 0,-1);
         hiveCell.setCoordinateQ(1);
         final Field field = hiveCell.getClass().getDeclaredField("coordinateQ");
@@ -19,8 +23,10 @@ class HiveCellTest {
 
     @Test
     void testSetCoordinateR() throws NoSuchFieldException, IllegalAccessException {
+        HiveGame hiveGame = new HiveGame();
+        HiveBoard hiveBoard = hiveGame.getBoard();
         HivePlayer hivePlayer = new HivePlayer(Hive.Player.WHITE);
-        HivePlayerTile tile1 = new HivePlayerTile(hivePlayer, Hive.Tile.GRASSHOPPER);
+        HivePlayerTile tile1 = new HivePlayerTile(hivePlayer, new HiveInsectGrasshopper(hiveGame, hiveBoard));
         HiveCell hiveCell = new HiveCell(tile1,1,-3);
         hiveCell.setCoordinateR(3);
         final Field field = hiveCell.getClass().getDeclaredField("coordinateR");
@@ -30,8 +36,10 @@ class HiveCellTest {
 
     @Test
     void testGetCoordinateR() throws NoSuchFieldException, IllegalAccessException {
+        HiveGame hiveGame = new HiveGame();
+        HiveBoard hiveBoard = hiveGame.getBoard();
         HivePlayer hivePlayer = new HivePlayer(Hive.Player.WHITE);
-        HivePlayerTile tile1 = new HivePlayerTile(hivePlayer, Hive.Tile.GRASSHOPPER);
+        HivePlayerTile tile1 = new HivePlayerTile(hivePlayer, new HiveInsectGrasshopper(hiveGame, hiveBoard));
         HiveCell hiveCell = new HiveCell(tile1, 2,-3);
         final Field field = hiveCell.getClass().getDeclaredField("coordinateR");
         field.setAccessible(true);
@@ -41,8 +49,10 @@ class HiveCellTest {
 
     @Test
     void testGetCoordinateQ() throws NoSuchFieldException, IllegalAccessException {
+        HiveGame hiveGame = new HiveGame();
+        HiveBoard hiveBoard = hiveGame.getBoard();
         HivePlayer hivePlayer = new HivePlayer(Hive.Player.WHITE);
-        HivePlayerTile tile1 = new HivePlayerTile(hivePlayer, Hive.Tile.GRASSHOPPER);
+        HivePlayerTile tile1 = new HivePlayerTile(hivePlayer, new HiveInsectGrasshopper(hiveGame, hiveBoard));
         HiveCell hiveCell = new HiveCell(tile1,3,-3);
         final Field field = hiveCell.getClass().getDeclaredField("coordinateQ");
         field.setAccessible(true);
@@ -52,11 +62,14 @@ class HiveCellTest {
 
     @Test
     void testAddPlayerTileToCell() throws NoSuchFieldException, IllegalAccessException {
+        HiveGame hiveGame = new HiveGame();
+        HiveBoard hiveBoard = hiveGame.getBoard();
+        HiveInsectGrasshopper grasshopper = new HiveInsectGrasshopper(hiveGame, hiveBoard);
         HivePlayer hivePlayer = new HivePlayer(Hive.Player.WHITE);
-        HivePlayerTile tile1 = new HivePlayerTile(hivePlayer, Hive.Tile.GRASSHOPPER);
+        HivePlayerTile tile1 = new HivePlayerTile(hivePlayer, grasshopper);
         HiveCell hiveCell = new HiveCell(tile1, -1,-2);
-        HivePlayerTile tile2 = new HivePlayerTile(hivePlayer, Hive.Tile.GRASSHOPPER);
-        HivePlayerTile tile3 = new HivePlayerTile(hivePlayer, Hive.Tile.GRASSHOPPER);
+        HivePlayerTile tile2 = new HivePlayerTile(hivePlayer, grasshopper);
+        HivePlayerTile tile3 = new HivePlayerTile(hivePlayer, grasshopper);
         hiveCell.addPlayerTile(tile2);
         hiveCell.addPlayerTile(tile3);
         assertTrue(hiveCell.getPlayerTilesAtCell().contains(tile1));
@@ -66,11 +79,14 @@ class HiveCellTest {
 
     @Test
     void testGetTopTileFromCell(){
+        HiveGame hiveGame = new HiveGame();
+        HiveBoard hiveBoard = hiveGame.getBoard();
         HivePlayer hivePlayer = new HivePlayer(Hive.Player.BLACK);
-        HivePlayerTile tile1 = new HivePlayerTile(hivePlayer, Hive.Tile.GRASSHOPPER);
+        HiveInsectGrasshopper grasshopper = new HiveInsectGrasshopper(hiveGame, hiveBoard);
+        HivePlayerTile tile1 = new HivePlayerTile(hivePlayer, grasshopper);
         HiveCell hiveCell = new HiveCell(tile1, 0,-2);
-        HivePlayerTile tile2 = new HivePlayerTile(hivePlayer, Hive.Tile.GRASSHOPPER);
-        HivePlayerTile tile3 = new HivePlayerTile(hivePlayer, Hive.Tile.GRASSHOPPER);
+        HivePlayerTile tile2 = new HivePlayerTile(hivePlayer, grasshopper);
+        HivePlayerTile tile3 = new HivePlayerTile(hivePlayer, grasshopper);
         hiveCell.addPlayerTile(tile2);
         hiveCell.addPlayerTile(tile3);
         assertTrue(hiveCell.getTopPlayerTileFromCell() == tile3);

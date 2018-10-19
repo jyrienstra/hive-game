@@ -82,7 +82,7 @@ public class HiveBoard {
     public boolean playerHasPlayedQueenBee(HivePlayer hivePlayer){
         for(HiveCell hiveCell : hiveCells){
             for(HivePlayerTile hivePlayerTile : hiveCell.getPlayerTilesAtCell()){
-                if(hivePlayerTile.getTile().equals(Hive.Tile.QUEEN_BEE) && hivePlayerTile.getPlayer().equals(hivePlayer)) return true;
+                if(hivePlayerTile.getInsect().getTile().equals(Hive.Tile.QUEEN_BEE) && hivePlayerTile.getPlayer().equals(hivePlayer)) return true;
             }
         }
         return false;

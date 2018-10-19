@@ -1,5 +1,6 @@
 package model;
 
+import model.Tile.*;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
@@ -38,11 +39,11 @@ class HiveGameTest {
         int spider = 0;
         for(HivePlayer hivePlayer : hivePlayers){
             for (HivePlayerTile hivePlayerTile : hivePlayer.getPlayerTiles()){
-                if(hivePlayerTile.getTile().equals(Hive.Tile.QUEEN_BEE)) queenBee+=1;
-                if(hivePlayerTile.getTile().equals(Hive.Tile.GRASSHOPPER)) grasHopper+=1;
-                if(hivePlayerTile.getTile().equals(Hive.Tile.BEETLE)) beetle+=1;
-                if(hivePlayerTile.getTile().equals(Hive.Tile.SOLDIER_ANT)) soldierAnt+=1;
-                if(hivePlayerTile.getTile().equals(Hive.Tile.SPIDER)) spider+=1;
+                if(hivePlayerTile.getInsect().getTile().equals(Hive.Tile.QUEEN_BEE)) queenBee+=1;
+                if(hivePlayerTile.getInsect().getTile().equals(Hive.Tile.GRASSHOPPER)) grasHopper+=1;
+                if(hivePlayerTile.getInsect().getTile().equals(Hive.Tile.BEETLE)) beetle+=1;
+                if(hivePlayerTile.getInsect().getTile().equals(Hive.Tile.SOLDIER_ANT)) soldierAnt+=1;
+                if(hivePlayerTile.getInsect().getTile().equals(Hive.Tile.SPIDER)) spider+=1;
             }
             assertTrue(queenBee == 1);
             assertTrue(spider == 2);
@@ -100,13 +101,18 @@ class HiveGameTest {
         final Field field = hiveGame.getClass().getDeclaredField("hiveBoard");
         field.setAccessible(true);
         HiveBoard hiveBoard = (HiveBoard) field.get(hiveGame);
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.WHITE), Hive.Tile.QUEEN_BEE), 0, 0));
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), Hive.Tile.GRASSHOPPER), -1, 0));
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), Hive.Tile.SOLDIER_ANT), -1, 1));
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), Hive.Tile.BEETLE), 0, 1));
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.WHITE), Hive.Tile.BEETLE), 1, 0));
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.WHITE), Hive.Tile.BEETLE), 1, -1));
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), Hive.Tile.SPIDER), 0, -2)); // deze is fout
+        HiveInsectQueenBee queenBee = new HiveInsectQueenBee(hiveGame, hiveBoard);
+        HiveInsectSpider spider = new HiveInsectSpider(hiveGame, hiveBoard);
+        HiveInsectBeetle beetle = new HiveInsectBeetle(hiveGame, hiveBoard);
+        HiveInsectSoldierAnt soldierAnt = new HiveInsectSoldierAnt(hiveGame, hiveBoard);
+        HiveInsectGrasshopper grasshopper = new HiveInsectGrasshopper(hiveGame, hiveBoard);
+        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.WHITE), queenBee), 0, 0));
+        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), grasshopper), -1, 0));
+        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), soldierAnt), -1, 1));
+        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), beetle), 0, 1));
+        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.WHITE), beetle), 1, 0));
+        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.WHITE), beetle), 1, -1));
+        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), spider), 0, -2)); // deze is fout
         assertTrue(!hiveGame.isWinner(Hive.Player.WHITE));
         assertTrue(!hiveGame.isWinner(Hive.Player.BLACK));
     }
@@ -117,13 +123,18 @@ class HiveGameTest {
         final Field field = hiveGame.getClass().getDeclaredField("hiveBoard");
         field.setAccessible(true);
         HiveBoard hiveBoard = (HiveBoard) field.get(hiveGame);
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.WHITE), Hive.Tile.QUEEN_BEE), 0, 0));
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), Hive.Tile.GRASSHOPPER), 0, -1));
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), Hive.Tile.SOLDIER_ANT), 1, -1));
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), Hive.Tile.BEETLE), 1, 0));
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.WHITE), Hive.Tile.BEETLE), -1, 0));
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.WHITE), Hive.Tile.BEETLE), 0, 1));
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), Hive.Tile.SPIDER), -1, 1));
+        HiveInsectQueenBee queenBee = new HiveInsectQueenBee(hiveGame, hiveBoard);
+        HiveInsectSpider spider = new HiveInsectSpider(hiveGame, hiveBoard);
+        HiveInsectBeetle beetle = new HiveInsectBeetle(hiveGame, hiveBoard);
+        HiveInsectSoldierAnt soldierAnt = new HiveInsectSoldierAnt(hiveGame, hiveBoard);
+        HiveInsectGrasshopper grasshopper = new HiveInsectGrasshopper(hiveGame, hiveBoard);
+        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.WHITE), queenBee), 0, 0));
+        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), grasshopper), 0, -1));
+        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), soldierAnt), 1, -1));
+        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), beetle), 1, 0));
+        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.WHITE), beetle), -1, 0));
+        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.WHITE), beetle), 0, 1));
+        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), spider), -1, 1));
         assertTrue(!hiveGame.isWinner(Hive.Player.WHITE));
         assertTrue(hiveGame.isWinner(Hive.Player.BLACK));
     }
@@ -136,13 +147,18 @@ class HiveGameTest {
         final Field field = hiveGame.getClass().getDeclaredField("hiveBoard");
         field.setAccessible(true);
         HiveBoard hiveBoard = (HiveBoard) field.get(hiveGame);
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), Hive.Tile.QUEEN_BEE), 0,0));
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), Hive.Tile.GRASSHOPPER), 0, -1));
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), Hive.Tile.SOLDIER_ANT), 1, -1));
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), Hive.Tile.BEETLE), 1, 0));
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.WHITE), Hive.Tile.BEETLE), -1, 0));
+        HiveInsectQueenBee queenBee = new HiveInsectQueenBee(hiveGame, hiveBoard);
+        HiveInsectSpider spider = new HiveInsectSpider(hiveGame, hiveBoard);
+        HiveInsectBeetle beetle = new HiveInsectBeetle(hiveGame, hiveBoard);
+        HiveInsectSoldierAnt soldierAnt = new HiveInsectSoldierAnt(hiveGame, hiveBoard);
+        HiveInsectGrasshopper grasshopper = new HiveInsectGrasshopper(hiveGame, hiveBoard);
+        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), queenBee), 0,0));
+        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), grasshopper), 0, -1));
+        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), soldierAnt), 1, -1));
+        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), beetle), 1, 0));
+        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.WHITE), beetle), -1, 0));
         hiveBoard.addHiveCell(new HiveCell(0, 1)); // geen player tile in deze
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), Hive.Tile.SPIDER), -1, 1));
+        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), spider), -1, 1));
         assertTrue(!hiveGame.isWinner(Hive.Player.WHITE));
         assertTrue(!hiveGame.isWinner(Hive.Player.BLACK));
     }
@@ -156,18 +172,23 @@ class HiveGameTest {
         field.setAccessible(true);
         HiveBoard hiveBoard = (HiveBoard) field.get(hiveGame);
         // Surround the queen bee of white with 6 cells == white winner
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.WHITE), Hive.Tile.QUEEN_BEE), 0, 0));
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), Hive.Tile.GRASSHOPPER), -1, 0));
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), Hive.Tile.SOLDIER_ANT), -1, 1));
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.WHITE), Hive.Tile.BEETLE), 1, 0));
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.WHITE), Hive.Tile.BEETLE), 1, -1));
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), Hive.Tile.SPIDER), 0, -1));
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), Hive.Tile.QUEEN_BEE), 0, 1));
+        HiveInsectQueenBee queenBee = new HiveInsectQueenBee(hiveGame, hiveBoard);
+        HiveInsectSpider spider = new HiveInsectSpider(hiveGame, hiveBoard);
+        HiveInsectBeetle beetle = new HiveInsectBeetle(hiveGame, hiveBoard);
+        HiveInsectSoldierAnt soldierAnt = new HiveInsectSoldierAnt(hiveGame, hiveBoard);
+        HiveInsectGrasshopper grasshopper = new HiveInsectGrasshopper(hiveGame, hiveBoard);
+        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.WHITE), queenBee), 0, 0));
+        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), grasshopper), -1, 0));
+        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), soldierAnt), -1, 1));
+        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.WHITE), beetle), 1, 0));
+        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.WHITE), beetle), 1, -1));
+        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), spider), 0, -1));
+        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), queenBee), 0, 1));
         assertTrue(!hiveGame.isDraw());
         // Make the white player also a winner by surrounding black's queen bee
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.WHITE), Hive.Tile.SPIDER), 1, 1));
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), Hive.Tile.BEETLE), 0, 2));
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.WHITE), Hive.Tile.GRASSHOPPER), -1, 2));
+        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.WHITE), spider), 1, 1));
+        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), beetle), 0, 2));
+        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.WHITE), grasshopper), -1, 2));
         // Beide spelers zijn dus nu een winnaar dus we verwachten een draw
         assertTrue(hiveGame.isDraw());
     }

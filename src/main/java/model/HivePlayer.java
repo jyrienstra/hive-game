@@ -23,7 +23,7 @@ public class HivePlayer {
 
     public HivePlayerTile getTile(Hive.Tile tile){
         for(HivePlayerTile hivePlayerTile : playerTiles){
-            if(hivePlayerTile.getTile() == tile) return hivePlayerTile;
+            if(hivePlayerTile.getInsect().getTile() == tile) return hivePlayerTile;
         }
         return null;
     }

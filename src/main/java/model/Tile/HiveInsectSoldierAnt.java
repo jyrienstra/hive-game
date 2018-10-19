@@ -28,6 +28,11 @@ public class HiveInsectSoldierAnt implements HiveInsect {
         return validPath;
     }
 
+    @Override
+    public Hive.Tile getTile() {
+        return Hive.Tile.SOLDIER_ANT;
+    }
+
     public ArrayList<HiveLocation> getValidPath(int fromQ, int fromR, int toQ, int toR, int maxCellMove) {
         ArrayList<HiveLocation> neighbours = hiveBoard.getNeighbourLocations(fromQ, fromR);
         ArrayList<HiveLocation> validPath = null;

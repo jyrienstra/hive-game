@@ -1,20 +1,22 @@
 package model;
 
+import model.Tile.HiveInsect;
+
 public class HivePlayerTile {
-    private Hive.Tile tile;
+    private HiveInsect insect;
     private HivePlayer player;
 
-    public HivePlayerTile(HivePlayer player, Hive.Tile tile){
-        this.tile = tile;
+    public HivePlayerTile(HivePlayer player, HiveInsect insect){
+        this.insect = insect;
         this.player = player;
     }
 
-    public Hive.Tile getTile() {
-        return tile;
+    public HiveInsect getInsect() {
+        return insect;
     }
 
-    public void setTile(Hive.Tile tile) {
-        this.tile = tile;
+    public void setInsect(HiveInsect insect) {
+        this.insect = insect;
     }
 
     public HivePlayer getPlayer() {

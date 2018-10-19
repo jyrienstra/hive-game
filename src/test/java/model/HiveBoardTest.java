@@ -1,5 +1,6 @@
 package model;
 
+import model.Tile.HiveInsectQueenBee;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -10,11 +11,13 @@ import static org.junit.jupiter.api.Assertions.*;
 class HiveBoardTest {
     @Test
     void testGetHiveCells(){
+        HiveGame hiveGame = new HiveGame();
+        HiveBoard hiveBoard = hiveGame.getBoard();
+        HiveInsectQueenBee hiveInsectQueenBee = new HiveInsectQueenBee(hiveGame, hiveBoard);
         HivePlayer hivePlayer = new HivePlayer(Hive.Player.WHITE);
-        HivePlayerTile hivePlayerTile = new HivePlayerTile(hivePlayer, Hive.Tile.QUEEN_BEE);
+        HivePlayerTile hivePlayerTile = new HivePlayerTile(hivePlayer, hiveInsectQueenBee);
         HiveCell hiveCell1 = new HiveCell(hivePlayerTile,0, 0);
         HiveCell hiveCell2 = new HiveCell(hivePlayerTile, -1, 0);
-        HiveBoard hiveBoard = new HiveBoard();
         hiveBoard.addHiveCell(hiveCell1);
         hiveBoard.addHiveCell(hiveCell2);
         assertTrue(hiveBoard.getHiveCells().contains(hiveCell1));

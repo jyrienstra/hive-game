@@ -24,7 +24,7 @@ public class HiveInsectGrasshopper implements HiveInsect {
     @Override
     public ArrayList<HiveLocation> getValidPath(int fromQ, int fromR, int toQ, int toR) throws IllegalMoveGrasshopper {
         HiveCell toCell = hiveBoard.getCellAt(toQ, toR);
-        if (toCell != null && toCell.getPlayerTilesAtCell().size() > 0 && !toCell.getTopPlayerTileFromCell().getTile().equals(Hive.Tile.GRASSHOPPER)) throw new IllegalMoveGrasshopper("11b Een sprinkhaan mag zich niet verplaatsen naar het veld waar hij al staat.");
+        if (toCell != null && toCell.getPlayerTilesAtCell().size() > 0 && !toCell.getTopPlayerTileFromCell().getInsect().getTile().equals(Hive.Tile.GRASSHOPPER)) throw new IllegalMoveGrasshopper("11b Een sprinkhaan mag zich niet verplaatsen naar het veld waar hij al staat.");
         if (toCell != null && toCell.getPlayerTilesAtCell().size() > 0) throw new IllegalMoveGrasshopper("11d Een sprinkhaan mag niet naar een bezet veld springen.");
 
         ArrayList<HiveLocation> validPath  = getValidPath(fromQ, fromR, toQ, toR, Integer.MAX_VALUE);
@@ -36,6 +36,11 @@ public class HiveInsectGrasshopper implements HiveInsect {
         HiveLocation shouldBeEndCell = validPath.get(validPath.size() - 1);
         movesToqToR.add(shouldBeEndCell);
         return movesToqToR;
+    }
+
+    @Override
+    public Hive.Tile getTile() {
+        return Hive.Tile.GRASSHOPPER;
     }
 
     public ArrayList<HiveLocation> getValidPath(int fromQ, int fromR, int toQ, int toR, int maxCellMove) {

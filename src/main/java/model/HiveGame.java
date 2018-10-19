@@ -1,5 +1,7 @@
 package model;
 
+import model.Tile.*;
+
 import java.lang.reflect.Executable;
 import java.util.ArrayList;
 import java.util.Stack;
@@ -25,18 +27,23 @@ public class HiveGame implements Hive {
         HivePlayer pWhite = new HivePlayer(Player.WHITE);
         hivePlayers.add(pBlack);
         hivePlayers.add(pWhite);
+        HiveInsectQueenBee queenBee = new HiveInsectQueenBee(this, hiveBoard);
+        HiveInsectSpider spider = new HiveInsectSpider(this, hiveBoard);
+        HiveInsectBeetle beetle = new HiveInsectBeetle(this, hiveBoard);
+        HiveInsectSoldierAnt soldierAnt = new HiveInsectSoldierAnt(this, hiveBoard);
+        HiveInsectGrasshopper grasshopper = new HiveInsectGrasshopper(this, hiveBoard);
         for(HivePlayer hivePlayer : hivePlayers){
-            hivePlayer.addPlayerTile(new HivePlayerTile(hivePlayer, Tile.QUEEN_BEE));
-            hivePlayer.addPlayerTile(new HivePlayerTile(hivePlayer, Tile.SPIDER));
-            hivePlayer.addPlayerTile(new HivePlayerTile(hivePlayer, Tile.SPIDER));
-            hivePlayer.addPlayerTile(new HivePlayerTile(hivePlayer, Tile.BEETLE));
-            hivePlayer.addPlayerTile(new HivePlayerTile(hivePlayer, Tile.BEETLE));
-            hivePlayer.addPlayerTile(new HivePlayerTile(hivePlayer, Tile.SOLDIER_ANT));
-            hivePlayer.addPlayerTile(new HivePlayerTile(hivePlayer, Tile.SOLDIER_ANT));
-            hivePlayer.addPlayerTile(new HivePlayerTile(hivePlayer, Tile.SOLDIER_ANT));
-            hivePlayer.addPlayerTile(new HivePlayerTile(hivePlayer, Tile.GRASSHOPPER));
-            hivePlayer.addPlayerTile(new HivePlayerTile(hivePlayer, Tile.GRASSHOPPER));
-            hivePlayer.addPlayerTile(new HivePlayerTile(hivePlayer, Tile.GRASSHOPPER));
+            hivePlayer.addPlayerTile(new HivePlayerTile(hivePlayer, queenBee));
+            hivePlayer.addPlayerTile(new HivePlayerTile(hivePlayer, spider));
+            hivePlayer.addPlayerTile(new HivePlayerTile(hivePlayer, spider));
+            hivePlayer.addPlayerTile(new HivePlayerTile(hivePlayer, beetle));
+            hivePlayer.addPlayerTile(new HivePlayerTile(hivePlayer, beetle));
+            hivePlayer.addPlayerTile(new HivePlayerTile(hivePlayer, soldierAnt));
+            hivePlayer.addPlayerTile(new HivePlayerTile(hivePlayer, soldierAnt));
+            hivePlayer.addPlayerTile(new HivePlayerTile(hivePlayer, soldierAnt));
+            hivePlayer.addPlayerTile(new HivePlayerTile(hivePlayer, grasshopper));
+            hivePlayer.addPlayerTile(new HivePlayerTile(hivePlayer, grasshopper));
+            hivePlayer.addPlayerTile(new HivePlayerTile(hivePlayer, grasshopper));
         }
         currentPlayer = pWhite;
     }
@@ -199,19 +206,18 @@ public class HiveGame implements Hive {
         HiveCell fromCell = hiveBoard.getCellAt(fromQ, fromR);
         HivePlayerTile fromHivePlayerTile = fromCell.getTopPlayerTileFromCell();
 
-//        int sFromQ = fromQ;
-//        int sFromR = fromR;
-//        int sToQ;
-//        int sToR;
-//        for (HiveLocation hiveLocation : validPath){
-//            sToQ = hiveLocation.getQ();
-//            sToR = hiveLocation.getR();
-//            hiveGame.makeMove(sFromQ, sFromR, sToQ, sToR);
-//            sFromQ = sToQ;
-//            sFromR = sToR;
-//        }
-       //@todo make moves
-
+        ArrayList<HiveLocation> validPath = fromHivePlayerTile.getInsect().getValidPath(fromQ, fromR, toQ, toR);
+        int sFromQ = fromQ;
+        int sFromR = fromR;
+        int sToQ;
+        int sToR;
+        for (HiveLocation hiveLocation : validPath){
+            sToQ = hiveLocation.getQ();
+            sToR = hiveLocation.getR();
+            makeMove(sFromQ, sFromR, sToQ, sToR);
+            sFromQ = sToQ;
+            sFromR = sToR;
+        }
         switchPlayer();
     }
 
@@ -228,7 +234,7 @@ public class HiveGame implements Hive {
     public boolean isWinner(Player player) {
         for(HiveCell hiveCell : hiveBoard.getHiveCells()){
             for (HivePlayerTile playerTile: hiveCell.getPlayerTilesAtCell()){
-                if (playerTile.getPlayer().getPlayerColor().equals(getOtherPlayerColor(player)) && playerTile.getTile().equals(Tile.QUEEN_BEE) && hiveCell.getTopNeighbourPlayerTiles().size() == 6) return true;
+                if (playerTile.getPlayer().getPlayerColor().equals(getOtherPlayerColor(player)) && playerTile.getInsect().getTile().equals(Tile.QUEEN_BEE) && hiveCell.getTopNeighbourPlayerTiles().size() == 6) return true;
             }
         }
         return false;

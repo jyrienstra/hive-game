@@ -27,6 +27,11 @@ public class HiveInsectSpider implements HiveInsect {
         return validPath;
     }
 
+    @Override
+    public Hive.Tile getTile() {
+        return Hive.Tile.SPIDER;
+    }
+
 
     public ArrayList<HiveLocation> getValidPath(int fromQ, int fromR, int toQ, int toR, int maxCellMove) {
         ArrayList<HiveLocation> neighbours = hiveBoard.getNeighbourLocations(fromQ, fromR);

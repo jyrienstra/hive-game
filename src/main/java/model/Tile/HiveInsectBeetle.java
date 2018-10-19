@@ -25,6 +25,11 @@ public class HiveInsectBeetle implements HiveInsect{
         return validPath;
     }
 
+    @Override
+    public Hive.Tile getTile() {
+        return Hive.Tile.BEETLE;
+    }
+
     private ArrayList<HiveLocation> getValidPath(int fromQ, int fromR, int toQ, int toR, int maxCellMove) {
         ArrayList<HiveLocation> neighbours = hiveBoard.getNeighbourLocations(fromQ, fromR);
         ArrayList<HiveLocation> validPath = null;
