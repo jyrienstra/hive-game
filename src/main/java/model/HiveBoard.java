@@ -66,8 +66,12 @@ public class HiveBoard {
      * @return false When two or more cells exist in the board (both white and black made a turn)
      * @return true When <2 cells exist
      */
-    public boolean firstTurn(){
-        if(hiveCells.size() >= 2) return false;
+    public boolean firstTurn() {
+        int tiles = 0;
+        for(HiveCell hiveCell : hiveCells){
+            if (hiveCell.getPlayerTilesAtCell().size() > 0) tiles++;
+            if (tiles >=2) return false;
+        }
         return true;
     }
 
@@ -86,16 +90,19 @@ public class HiveBoard {
 
     /***
      * Get HiveCell from HiveBoard that matches coordinate q and coordinate r
+     * If it does not exist a new cell is returned
      * @param q
      * @param r
-     * @return HiveCell if there is a HiveCell that matches with the param coordinates q,r
-     * @return null If no match is found
+     * @return existingHiveCell if there is a HiveCell that matches with the param coordinates q,r
+     * @return newHiveCell If the cell does not exist yet
      */
     public HiveCell getCellAt(int q, int r){
         for(HiveCell hiveCell : hiveCells) {
             if (hiveCell.getCoordinateQ() == q && hiveCell.getCoordinateR() == r) return hiveCell;
         }
-        return null;
+        HiveCell newCell = new HiveCell(q, r);
+        addHiveCell(newCell);
+        return newCell;
     }
 
     private void addNeighboursToCells(){
@@ -155,6 +162,16 @@ public class HiveBoard {
 
         }
         return false;
+    }
+
+    // A = first element
+    // B = next element
+    public String getDirectionAsString(int aQ, int aR, int bQ, int bR){
+        if (bQ == aQ - 1 && bR == aR + 1) return "Left down";
+        if (bQ == aQ && bR == aR + 1) return "Right down";
+        if (bQ == aQ && bR == aR - 1) return "Left up";
+        if (bQ == aQ + 1 && bR == aR - 1) return "Right up";
+        return null;
     }
 
     /**

@@ -384,6 +384,19 @@ class HiveGameTest {
         assertTrue(valid == false);
     }
 
+    @Test
+    void testIfFirstTurnFunctionHasExpectedResult() throws Hive.IllegalMove {
+        HiveGame hiveGame = new HiveGame();
+        assertTrue(hiveGame.getBoard().firstTurn());
+        hiveGame.getBoard().addHiveCell(new HiveCell(1, 1));
+        hiveGame.getBoard().addHiveCell(new HiveCell(2, 1));
+        hiveGame.getBoard().addHiveCell(new HiveCell(2, -2));
+        assertTrue(hiveGame.getBoard().firstTurn());
+        hiveGame.play(Hive.Tile.QUEEN_BEE, 0,0); // wit
+        hiveGame.play(Hive.Tile.QUEEN_BEE, 1, 0); // zwart
+        assertTrue(hiveGame.getBoard().firstTurn() == false);
+    }
+
     // When the toCell and fromCell have >1 neighbours in common and we can't shift the tile because of a stack at a certain cell that is to high.
     //@todo
 

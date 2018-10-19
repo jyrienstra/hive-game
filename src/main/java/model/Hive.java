@@ -47,7 +47,7 @@ public interface Hive {
      */
     class IllegalMove extends Exception {
         IllegalMove() { super(); }
-        IllegalMove(String message) { super(message); }
+        public IllegalMove(String message) { super(message); }
     }
 
     /**

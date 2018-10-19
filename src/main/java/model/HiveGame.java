@@ -41,6 +41,10 @@ public class HiveGame implements Hive {
         currentPlayer = pWhite;
     }
 
+    public HiveBoard getBoard(){
+        return this.hiveBoard;
+    }
+
     private void switchPlayer(){
         for(HivePlayer hivePlayer: hivePlayers){
             if (currentPlayer != hivePlayer){
@@ -150,6 +154,10 @@ public class HiveGame implements Hive {
         try {
             HiveCell fromCell = hiveBoard.getCellAt(fromQ, fromR);
             HiveCell toCell = hiveBoard.getCellAt(toQ, toR);
+            if (fromCell == null){
+                fromCell = new HiveCell(fromQ, fromR);
+                hiveBoard.addHiveCell(fromCell);
+            }
             if (toCell == null) {
                 toCell = new HiveCell(toQ, toR);
                 hiveBoard.addHiveCell(toCell);
@@ -161,37 +169,6 @@ public class HiveGame implements Hive {
         return true;
     }
 
-    public ArrayList<HiveLocation> getValidPath(int fromQ, int fromR, int toQ, int toR, int maxCellMove) throws IllegalMove {
-        ArrayList<HiveLocation> neighbours = hiveBoard.getNeighbourLocations(fromQ, fromR);
-        ArrayList<HiveLocation> validPath = null;
-        for(HiveLocation n: neighbours){
-            if (validPath != null) return validPath;
-            validPath = findValidPath(fromQ, fromR, n.getQ(), n.getR(), toQ, toR, maxCellMove, new ArrayList<>());
-        }
-        return validPath;
-    }
-
-    public ArrayList<HiveLocation> findValidPath(int currFromQ, int currFromR, int currToQ, int currToR, int endQ, int endR, int maxCellMove, ArrayList<HiveLocation> path) throws IllegalMove {
-        if (isValidShift(currFromQ, currFromR, currToQ, currToR)){
-            // Simulate shift
-            path.add(new HiveLocation(currToQ, currToR));
-            currFromQ = currToQ;
-            currFromR = currToR;
-        }else{
-            return null;
-        }
-        if (currFromQ == endQ && currFromR == endR) return path;
-        if (path.size() >= maxCellMove) return null;
-
-        ArrayList<HiveLocation> neighbours = hiveBoard.getNeighbourLocations(currFromQ, currFromR);
-        for(HiveLocation n: neighbours){
-            currToQ = n.getQ();
-            currToR = n.getR();
-            if(findValidPath(currFromQ, currFromR, currToQ, currToR, endQ, endR, maxCellMove, path) != null) return path;
-            path.remove(new HiveLocation(currToQ, currToR));
-        }
-        return null;
-    }
 
     public void throwIllegalMoveWhenMoveIsNotValid(int fromQ, int fromR, int toQ, int toR) throws IllegalMove{
         HiveCell fromCell = hiveBoard.getCellAt(fromQ, fromR);
@@ -213,7 +190,6 @@ public class HiveGame implements Hive {
         HivePlayerTile fromHivePlayerTile = fromCell.getTopPlayerTileFromCell();
         toCell.addPlayerTile(fromCell.getTopPlayerTileFromCell());
         fromCell.removePlayerTile(fromCell.getTopPlayerTileFromCell());
-        switchPlayer();
     }
 
 //    e. Elk van de types stenen heeft zijn eigen manier van verplaatsen.
@@ -221,34 +197,22 @@ public class HiveGame implements Hive {
         throwIllegalMoveWhenMoveIsNotValid(fromQ, fromR, toQ,  toR);
 
         HiveCell fromCell = hiveBoard.getCellAt(fromQ, fromR);
-        HiveCell toCell = hiveBoard.getCellAt(toQ, toR);
         HivePlayerTile fromHivePlayerTile = fromCell.getTopPlayerTileFromCell();
-        ArrayList<HiveLocation> validPath = null;
-        switch (fromHivePlayerTile.getTile()){
-            case BEETLE:
-                validPath = getValidPath(fromQ, fromR, toQ, toR, 1);
-                break;
-            case QUEEN_BEE:
-                if (toCell != null && !toCell.getPlayerTilesAtCell().isEmpty()) throw new IllegalMove("The QUEEN_BEE can only be moved to an empty cell");
-                validPath = getValidPath(fromQ, fromR, toQ, toR, 1);
-                break;
-            case SOLDIER_ANT:
-                validPath = getValidPath(fromQ, fromR, toQ, toR, Integer.MAX_VALUE);
-        }
-        if (validPath == null) throw new IllegalMove("We could not find a valid path to toQ,toR");
 
-        // Make shifts
-        int sFromQ = fromQ;
-        int sFromR = fromR;
-        int sToQ;
-        int sToR;
-        for (HiveLocation hiveLocation : validPath){
-            sToQ = hiveLocation.getQ();
-            sToR = hiveLocation.getR();
-            makeMove(sFromQ, sFromR, sToQ, sToR);
-            sFromQ = sToQ;
-            sFromR = sToR;
-        }
+//        int sFromQ = fromQ;
+//        int sFromR = fromR;
+//        int sToQ;
+//        int sToR;
+//        for (HiveLocation hiveLocation : validPath){
+//            sToQ = hiveLocation.getQ();
+//            sToR = hiveLocation.getR();
+//            hiveGame.makeMove(sFromQ, sFromR, sToQ, sToR);
+//            sFromQ = sToQ;
+//            sFromR = sToR;
+//        }
+       //@todo make moves
+
+        switchPlayer();
     }
 
     public void pass() throws IllegalMove {

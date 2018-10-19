@@ -5,7 +5,7 @@ import java.util.Stack;
 
 /**
  * Represents a place of the board where an insect can be placed
- * The insects at a certain tile are inserted in a Stack so we
+ * The tiles at a certain tile are inserted in a Stack so we
  * can keep track which tile/insect is on top.
  */
 public class HiveCell {
