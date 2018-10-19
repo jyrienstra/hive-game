@@ -62,6 +62,8 @@ class HiveInsectBeetleTest {
             int toQ = l.getQ();
             int toR = l.getR();
             assertTrue(hiveGame.isValidShift(fromQ, fromR, toQ, toR));
+            fromQ = l.getQ();
+            fromR = l.getR();
         }
     }
 }
