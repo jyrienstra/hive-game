@@ -103,11 +103,14 @@ class HiveInsectSpiderTest {
         hiveGame.play(Hive.Tile.SPIDER, 2, 0); // zwart
         HiveInsectSpider hiveInsectSpider = new HiveInsectSpider(hiveGame, hiveBoard);
         ArrayList<HiveLocation> validPath = hiveInsectSpider.getValidPath(0, -1, 3, -1);
-        int fromQ = 3;
-        int fromR = 0;
+        int fromQ = 0;
+        int fromR = -1;
         for(HiveLocation l : validPath){
             int toQ = l.getQ();
             int toR = l.getR();
+            if (!hiveGame.isValidShift(fromQ, fromR, toQ, toR)){
+                System.out.println(fromQ + "," + fromR + " to " + toQ + "+," + toR);
+            }
             assertTrue(hiveGame.isValidShift(fromQ, fromR, toQ, toR));
         }
     }

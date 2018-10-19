@@ -56,8 +56,8 @@ class HiveInsectBeetleTest {
         hiveGame.play(Hive.Tile.SOLDIER_ANT, 2, 0); // zwart
         HiveInsectBeetle hiveInsectBeetle = new HiveInsectBeetle(hiveGame, hiveBoard);
         ArrayList<HiveLocation> validPath = hiveInsectBeetle.getValidPath(-1,1,0,1);
-        int fromQ = 3;
-        int fromR = 0;
+        int fromQ = -1;
+        int fromR = 1;
         for(HiveLocation l : validPath){
             int toQ = l.getQ();
             int toR = l.getR();

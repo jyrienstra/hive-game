@@ -85,6 +85,9 @@ class HiveInsectSoldierAntTest {
         for(HiveLocation l : validPath){
             int toQ = l.getQ();
             int toR = l.getR();
+            if (!hiveGame.isValidShift(fromQ, fromR, toQ, toR)){
+                System.out.println(fromQ + "," + fromR + " to " + toQ + "+," + toR);
+            }
             assertTrue(hiveGame.isValidShift(fromQ, fromR, toQ, toR));
         }
     }
