@@ -9,7 +9,7 @@ class HivePlayerTileTest {
     @Test
     void testGetAndSetTile(){
         HivePlayer hivePlayer = new HivePlayer(Hive.Player.BLACK);
-        HivePlayerTile hivePlayerTile = new HivePlayerTile(hivePlayer, Hive.Tile.GRASSHOPPER);
+        HivePlayerTile hivePlayerTile = new HivePlayerTile(hivePlayer, Hive.Tile.BEETLE);
         assertTrue(hivePlayerTile.getTile() == Hive.Tile.BEETLE);
         hivePlayerTile.setTile(Hive.Tile.GRASSHOPPER);
         assertTrue(hivePlayerTile.getTile() == Hive.Tile.GRASSHOPPER);
