@@ -21,7 +21,7 @@ public class HiveInsectSoldierAnt implements HiveInsect {
     }
 
     @Override
-    public ArrayList<HiveLocation> move(int fromQ, int fromR, int toQ, int toR) throws IllegalMoveSoldierAnt {
+    public ArrayList<HiveLocation> getValidPath(int fromQ, int fromR, int toQ, int toR) throws IllegalMoveSoldierAnt {
         ArrayList<HiveLocation> validPath  = getValidPath(fromQ, fromR, toQ, toR, Integer.MAX_VALUE);
         if (validPath == null) throw new IllegalMoveSoldierAnt("Could not find a valid path for the Soldier Ant to Q = " + toQ + " and R = " + toR);
 
@@ -49,7 +49,6 @@ public class HiveInsectSoldierAnt implements HiveInsect {
 
         if (hiveGame.isValidShift(currFromQ, currFromR, currToQ, currToR)){
             path.add(new HiveLocation(currToQ, currToR)); // Simulate shift
-            hiveGame.makeMove(currFromQ, currFromR, currToQ, currToR);
             currFromQ = currToQ;
             currFromR = currToR;
         }else{
@@ -65,10 +64,7 @@ public class HiveInsectSoldierAnt implements HiveInsect {
             HiveLocation toLocation = new HiveLocation(currToQ, currToR);
             if (!path.contains(toLocation)) {
                 if (findValidPath(currFromQ, currFromR, currToQ, currToR, endQ, endR, maxCellMove, path) != null) return path;
-                if (path.size() > 0 && path.get(path.size()-1).equals(new HiveLocation(currToQ, currToR))){
-                    hiveGame.undoMove(currFromQ, currFromR, currToQ, currToR);
-                    path.remove(new HiveLocation(currToQ, currToR));
-                }
+                path.remove(new HiveLocation(currToQ, currToR));
             }
         }
         return null;

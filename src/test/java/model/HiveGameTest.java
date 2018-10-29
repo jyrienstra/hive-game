@@ -309,13 +309,10 @@ class HiveGameTest {
         HiveGame hiveGame = new HiveGame();
         hiveGame.play(Hive.Tile.QUEEN_BEE, 2, -1); // wit
         hiveGame.play(Hive.Tile.QUEEN_BEE, 1,0); // zwart
-        hiveGame.play(Hive.Tile.SOLDIER_ANT, 3, -1); // wit
-        hiveGame.play(Hive.Tile.BEETLE, 1, 1); // zwart
+        hiveGame.play(Hive.Tile.BEETLE, 3, -1); // wit
+        hiveGame.play(Hive.Tile.SOLDIER_ANT, 1, 1); // zwart
         hiveGame.move(3, -1, 2, 0); // wit Move naar onbezet veld
-        assertThrows(Hive.IllegalMove.class, ()->{
-            //@todo navragen, dit mag toch niet is namelijk een veld die op een andere hoogte zit?
-            hiveGame.move(1,1, 2, 0); // zwart move naar bezet veld
-        });
+        hiveGame.move(1,1, 2, 0); // zwart move naar bezet veld
         assertThrows(Hive.IllegalMove.class, ()->{
            hiveGame.move(2, 0, 4, 0); // zwart moved veld naar veld die niet grezend is (slaat 1 cell over)
         });
@@ -352,7 +349,6 @@ class HiveGameTest {
         hiveGame.play(Hive.Tile.BEETLE, 2, -1); // wit
         hiveGame.play(Hive.Tile.SOLDIER_ANT, 2, 1); // zwart
         hiveGame.play(Hive.Tile.BEETLE, 1, 0); // wit
-        System.out.println(hiveGame.isValidShift(2, 1, 1, 1));
         assertThrows(Hive.IllegalMove.class, ()-> {
             hiveGame.move(2, 1, 1, 1);
         });

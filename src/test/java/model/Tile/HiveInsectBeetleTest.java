@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class HiveInsectBeetleTest {
     @Test
-    void testInsectMoveContainsExpectedMoveWhenMakingAValidMove() throws Hive.IllegalMove {
+    void testGetValidMoveContainsExpectedMoveWhenMakingAValidMove() throws Hive.IllegalMove {
         HiveGame hiveGame = new HiveGame();
         HiveBoard hiveBoard = hiveGame.getBoard();
         hiveGame.play(Hive.Tile.QUEEN_BEE, 0,0); // wit
@@ -25,7 +25,7 @@ class HiveInsectBeetleTest {
         hiveGame.play(Hive.Tile.SOLDIER_ANT, 2, 0); // zwart
         HiveInsectBeetle hiveInsectBeetle = new HiveInsectBeetle(hiveGame, hiveBoard);
 
-        ArrayList<HiveLocation> validPath = hiveInsectBeetle.move(-1,1,0,1);
+        ArrayList<HiveLocation> validPath = hiveInsectBeetle.getValidPath(-1,1,0,1);
         assertTrue(validPath.size() == 1);
         assertTrue(validPath.get(0).equals(new HiveLocation(0,1)));
     }
@@ -41,13 +41,13 @@ class HiveInsectBeetleTest {
         HiveInsectBeetle hiveInsectBeetle = new HiveInsectBeetle(hiveGame, hiveBoard);
 
         assertThrows(IllegalMoveBeetle.class, ()->{
-            ArrayList<HiveLocation> validPathMaxDepth1 = hiveInsectBeetle.move(-1,1,1,1); // beelte max depth is 1
+            ArrayList<HiveLocation> validPathMaxDepth1 = hiveInsectBeetle.getValidPath(-1,1,1,1); // beelte max depth is 1
         });
     }
 
-    // Test of alle shifts vanuit move wel validShifts zijn, sinds de Queenbee zich verplaatst door te schuiven
+    // Test of alle shifts vanuit getValidPath wel validShifts zijn, sinds de Queenbee zich verplaatst door te schuiven
     @Test
-    void testInsectMoveContainsValidShifts() throws Hive.IllegalMove {
+    void testGetValidPathContainsValidShifts() throws Hive.IllegalMove {
         HiveGame hiveGame = new HiveGame();
         HiveBoard hiveBoard = hiveGame.getBoard();
         hiveGame.play(Hive.Tile.QUEEN_BEE, 0,0); // wit
@@ -55,7 +55,7 @@ class HiveInsectBeetleTest {
         hiveGame.play(Hive.Tile.BEETLE, -1, 1); // wit
         hiveGame.play(Hive.Tile.SOLDIER_ANT, 2, 0); // zwart
         HiveInsectBeetle hiveInsectBeetle = new HiveInsectBeetle(hiveGame, hiveBoard);
-        ArrayList<HiveLocation> validPath = hiveInsectBeetle.move(-1,1,0,1);
+        ArrayList<HiveLocation> validPath = hiveInsectBeetle.getValidPath(-1,1,0,1);
         int fromQ = -1;
         int fromR = 1;
         for(HiveLocation l : validPath){

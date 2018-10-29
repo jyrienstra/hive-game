@@ -2,6 +2,7 @@ package model;
 
 import model.Tile.*;
 
+import java.lang.reflect.Executable;
 import java.util.ArrayList;
 import java.util.Stack;
 
@@ -175,6 +176,7 @@ public class HiveGame implements Hive {
         return true;
     }
 
+
     public void throwIllegalMoveWhenMoveIsNotValid(int fromQ, int fromR, int toQ, int toR) throws IllegalMove{
         HiveCell fromCell = hiveBoard.getCellAt(fromQ, fromR);
         if (fromCell == null) throw new IllegalMove("Er bestaat geen steen met deze coordinaten");
@@ -195,23 +197,6 @@ public class HiveGame implements Hive {
         HivePlayerTile fromHivePlayerTile = fromCell.getTopPlayerTileFromCell();
         toCell.addPlayerTile(fromCell.getTopPlayerTileFromCell());
         fromCell.removePlayerTile(fromCell.getTopPlayerTileFromCell());
-        System.out.println("Making move to" + toQ + "," + toR + toCell.getTopPlayerTileFromCell());
-    }
-
-    /**
-     * Undo move that has already been done (so provide old coordinates)
-     * @param fromQ
-     * @param fromR
-     * @param toQ
-     * @param toR
-     */
-    public void undoMove(int fromQ, int fromR, int toQ, int toR){
-        HiveCell fromCell = hiveBoard.getCellAt(toQ, toR);
-        HiveCell toCell = hiveBoard.getCellAt(fromQ, fromR);
-        System.out.println("Undo move from cell " + toQ + "," + toR);
-        HivePlayerTile fromHivePlayerTile = fromCell.getTopPlayerTileFromCell();
-        toCell.addPlayerTile(fromCell.getTopPlayerTileFromCell());
-        fromCell.removePlayerTile(fromCell.getTopPlayerTileFromCell());
     }
 
 //    e. Elk van de types stenen heeft zijn eigen manier van verplaatsen.
@@ -221,9 +206,17 @@ public class HiveGame implements Hive {
         HiveCell fromCell = hiveBoard.getCellAt(fromQ, fromR);
         HivePlayerTile fromHivePlayerTile = fromCell.getTopPlayerTileFromCell();
 
-        ArrayList<HiveLocation> validPath = fromHivePlayerTile.getInsect().move(fromQ, fromR, toQ, toR);
-        for(HiveLocation l: validPath){
-            System.out.println("Moved to: " + l.getQ() + "," + l.getR());
+        ArrayList<HiveLocation> validPath = fromHivePlayerTile.getInsect().getValidPath(fromQ, fromR, toQ, toR);
+        int sFromQ = fromQ;
+        int sFromR = fromR;
+        int sToQ;
+        int sToR;
+        for (HiveLocation hiveLocation : validPath){
+            sToQ = hiveLocation.getQ();
+            sToR = hiveLocation.getR();
+            makeMove(sFromQ, sFromR, sToQ, sToR);
+            sFromQ = sToQ;
+            sFromR = sToR;
         }
         switchPlayer();
     }
