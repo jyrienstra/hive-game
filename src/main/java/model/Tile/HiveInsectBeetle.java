@@ -18,7 +18,7 @@ public class HiveInsectBeetle implements HiveInsect{
     }
 
     @Override
-    public ArrayList<HiveLocation> getValidPath(int fromQ, int fromR, int toQ, int toR) throws IllegalMoveBeetle {
+    public ArrayList<HiveLocation> move(int fromQ, int fromR, int toQ, int toR) throws IllegalMoveBeetle {
         ArrayList<HiveLocation> validPath  = getValidPath(fromQ, fromR, toQ, toR, 1);
         if (validPath == null) throw new IllegalMoveBeetle("Could not find a valid path for the Beetle to Q = " + toQ + " and R = " + toR);
 
@@ -43,6 +43,7 @@ public class HiveInsectBeetle implements HiveInsect{
     private ArrayList<HiveLocation> findValidPath(int currFromQ, int currFromR, int currToQ, int currToR, int endQ, int endR, int maxCellMove, ArrayList<HiveLocation> path) {
         if (hiveGame.isValidShift(currFromQ, currFromR, currToQ, currToR)){
             path.add(new HiveLocation(currToQ, currToR)); // Simulate shift
+            hiveGame.makeMove(currFromQ, currFromR, currToQ, currToR);
             currFromQ = currToQ;
             currFromR = currToR;
         }else{
@@ -58,7 +59,10 @@ public class HiveInsectBeetle implements HiveInsect{
             HiveLocation toLocation = new HiveLocation(currToQ, currToR);
             if (!path.contains(toLocation)) {
                 if (findValidPath(currFromQ, currFromR, currToQ, currToR, endQ, endR, maxCellMove, path) != null) return path;
-                path.remove(new HiveLocation(currToQ, currToR));
+                if (path.size() > 0 && path.get(path.size()-1).equals(new HiveLocation(currToQ, currToR))){
+                    hiveGame.undoMove(currFromQ, currFromR, currToQ, currToR);
+                    path.remove(new HiveLocation(currToQ, currToR));
+                }
             }
         }
         return null;

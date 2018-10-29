@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class HiveInsectQueenBeeTest {
     @Test
-    void testGetValidMoveContainsExpectedMove() throws Hive.IllegalMove {
+    void testInsectMoveContainsExpectedMove() throws Hive.IllegalMove {
         HiveGame hiveGame = new HiveGame();
         HiveBoard hiveBoard = hiveGame.getBoard();
         hiveGame.play(Hive.Tile.QUEEN_BEE, 0,0); // wit
@@ -25,13 +25,13 @@ class HiveInsectQueenBeeTest {
         hiveGame.play(Hive.Tile.BEETLE, -1, 1); // wit
         hiveGame.play(Hive.Tile.SOLDIER_ANT, 2, 0); // zwart
         HiveInsectQueenBee hiveInsectQueenBee = new HiveInsectQueenBee(hiveGame, hiveBoard);
-        ArrayList<HiveLocation> validPath = hiveInsectQueenBee.getValidPath(0,0,1,-1);
+        ArrayList<HiveLocation> validPath = hiveInsectQueenBee.move(0,0,1,-1);
         assertTrue(validPath.get(0).equals(new HiveLocation(1,-1)));
     }
 
     // a. De bijenkoningin verplaatst zich door precies één keer te verschuiven.
     @Test
-    void testGetValidMoveThrowsExceptionWhenShiftingMoreThanOnce() throws Hive.IllegalMove {
+    void testInsectMoveThrowsExceptionWhenShiftingMoreThanOnce() throws Hive.IllegalMove {
         HiveGame hiveGame = new HiveGame();
         HiveBoard hiveBoard = hiveGame.getBoard();
         hiveGame.play(Hive.Tile.QUEEN_BEE, 0,0); // wit
@@ -40,7 +40,7 @@ class HiveInsectQueenBeeTest {
         hiveGame.play(Hive.Tile.SOLDIER_ANT, 2, 0); // zwart
         HiveInsectQueenBee hiveInsectQueenBee = new HiveInsectQueenBee(hiveGame, hiveBoard);
         assertThrows(IllegalMoveQueenBee.class, ()->{
-            ArrayList<HiveLocation> validPath = hiveInsectQueenBee.getValidPath(0,0,2,-2);
+            ArrayList<HiveLocation> validPath = hiveInsectQueenBee.move(0,0,2,-2);
         });
     }
 
@@ -55,16 +55,16 @@ class HiveInsectQueenBeeTest {
         hiveGame.play(Hive.Tile.SOLDIER_ANT, 2, 0); // zwart
         HiveInsectQueenBee hiveInsectQueenBee = new HiveInsectQueenBee(hiveGame, hiveBoard);
         assertThrows(IllegalMoveQueenBee.class, ()-> {
-                    ArrayList<HiveLocation> validPath1 = hiveInsectQueenBee.getValidPath(0, 0, 1, 0);
+                    ArrayList<HiveLocation> validPath1 = hiveInsectQueenBee.move(0, 0, 1, 0);
         });
         assertThrows(IllegalMoveQueenBee.class, ()-> {
-            ArrayList<HiveLocation> validPath2 = hiveInsectQueenBee.getValidPath(0,0,-1,1);
+            ArrayList<HiveLocation> validPath2 = hiveInsectQueenBee.move(0,0,-1,1);
         });
     }
 
-    // Test of alle shifts vanuit getValidPath wel validShifts zijn, sinds de Queenbee zich verplaatst door te schuiven
+    // Test of alle shifts vanuit move wel validShifts zijn, sinds de Queenbee zich verplaatst door te schuiven
     @Test
-    void testGetValidPathContainsValidShifts() throws Hive.IllegalMove {
+    void testInsectMoveContainsValidShifts() throws Hive.IllegalMove {
         HiveGame hiveGame = new HiveGame();
         HiveBoard hiveBoard = hiveGame.getBoard();
         hiveGame.play(Hive.Tile.QUEEN_BEE, 2, -1); // wit
@@ -74,13 +74,13 @@ class HiveInsectQueenBeeTest {
         HiveInsectQueenBee hiveInsectQueenBee = new HiveInsectQueenBee(hiveGame, hiveBoard);
         assertThrows(IllegalMoveQueenBee.class, ()->{
             // Geen valide shift terwijl queen bee regels wel goed zijn, dus shiften kan niet
-            ArrayList<HiveLocation> validPath = hiveInsectQueenBee.getValidPath(1,0,2,0);
+            ArrayList<HiveLocation> validPath = hiveInsectQueenBee.move(1,0,2,0);
         });
     }
 
-    // Test of alle shifts vanuit getValidPath wel validShifts zijn, sinds de Queenbee zich verplaatst door te schuiven
+    // Test of alle shifts vanuit move wel validShifts zijn, sinds de Queenbee zich verplaatst door te schuiven
     @Test
-    void testGetValidPathContainsValidShifts2() throws Hive.IllegalMove {
+    void testInsectMoveContainsValidShifts2() throws Hive.IllegalMove {
         HiveGame hiveGame = new HiveGame();
         HiveBoard hiveBoard = hiveGame.getBoard();
         hiveGame.play(Hive.Tile.BEETLE, 3, -1); // wit
@@ -91,7 +91,7 @@ class HiveInsectQueenBeeTest {
         HiveInsectQueenBee hiveInsectQueenBee = new HiveInsectQueenBee(hiveGame, hiveBoard);
         assertThrows(IllegalMoveQueenBee.class, ()->{
            // Steen komt los wanneer we dit doen
-            ArrayList<HiveLocation> validPath = hiveInsectQueenBee.getValidPath(1,0,1,1);
+            ArrayList<HiveLocation> validPath = hiveInsectQueenBee.move(1,0,1,1);
         });
         assertTrue(!hiveGame.isValidShift(1,0,1,1));
     }
