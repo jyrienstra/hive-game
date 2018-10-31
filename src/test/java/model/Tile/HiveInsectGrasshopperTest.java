@@ -1,9 +1,6 @@
 package model.Tile;
 
-import model.Hive;
-import model.HiveBoard;
-import model.HiveGame;
-import model.HiveLocation;
+import model.*;
 import model.Tile.Exceptions.IllegalMoveGrasshopper;
 import org.junit.jupiter.api.Test;
 
@@ -101,19 +98,5 @@ class HiveInsectGrasshopperTest {
         assertThrows(IllegalMoveGrasshopper.class, ()-> {
             ArrayList<HiveLocation> validPath = hiveInsectGrasshopper.getValidPath(0,0,2,0);
         });
-    }
-
-    @Test
-    void testPathIsStraightLine(){
-        HiveGame hiveGame = new HiveGame();
-        HiveInsectGrasshopper hiveInsectGrasshopper = new HiveInsectGrasshopper(hiveGame);
-        ArrayList<HiveLocation> path = new ArrayList<>();
-        path.add(new HiveLocation(1,-1)); // 1st move
-        path.add(new HiveLocation(2,-2)); // 2nd move
-        assertTrue(hiveInsectGrasshopper.isPathStraightLine(0,0, path));
-        path.add(new HiveLocation(3,-3));
-        assertTrue(hiveInsectGrasshopper.isPathStraightLine(0,0, path));
-        path.add(new HiveLocation(3, -1));
-        assertTrue(!hiveInsectGrasshopper.isPathStraightLine(0,0, path));
     }
 }

@@ -348,4 +348,39 @@ public class HiveBoard {
         }
         return copyBoard;
     }
+
+    public boolean isPathFilledWithTiles(ArrayList<HiveLocation> path){
+        HiveCell currCell = null;
+        for(HiveLocation l : path){
+            currCell = getCellAt(l.getQ(), l.getR());
+            if (currCell == null) return false;
+            if (currCell.getPlayerTilesAtCell().isEmpty()) return false;
+        }
+        return true;
+    }
+
+    /**
+     * Checks if the path is a straight line by checking direction of the current
+     * and next location l[i] and l[i + 1]. If somewhere in this process the old
+     * direction does not match the new direction the list does not contain a
+     * straight path to the destination.
+     * @param startQ
+     * @param startR
+     * @param pathWithoutFromCell
+     * @return
+     */
+    public boolean isPathStraightLine(int startQ, int startR, ArrayList<HiveLocation> pathWithoutFromCell){
+        ArrayList<HiveLocation> fullPath = new ArrayList();
+        fullPath.add(new HiveLocation(startQ, startR));
+        fullPath.addAll(pathWithoutFromCell);
+
+        HiveBoard.Direction oldDirection = null;
+        for(int i = 0; i < fullPath.size() - 1; i++){
+            HiveBoard.Direction newDirection = getDirection(fullPath.get(i).getQ(), fullPath.get(i).getR(), fullPath.get(i + 1).getQ(), fullPath.get(i + 1).getR());
+            if (newDirection == null) return false;
+            if (oldDirection == null) oldDirection = newDirection;
+            if (!oldDirection.name().equals(newDirection.name())) return false;
+        }
+        return true;
+    }
 }

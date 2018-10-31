@@ -52,14 +52,14 @@ public class HiveInsectGrasshopper implements HiveInsect {
     }
 
     public ArrayList<HiveLocation> findValidPath(int currFromQ, int currFromR, int currToQ, int currToR, int startQ, int startR, int endQ, int endR, int maxCellMove, ArrayList<HiveLocation> path) {
-        if (!pathIsFilledWithTiles(path)) return null; // 11e Alle velden tussen de start- en eindpositie bezet moeten zijn.
+        if (!hiveGame.getBoard().isPathFilledWithTiles(path)) return null; // 11e Alle velden tussen de start- en eindpositie bezet moeten zijn.
 
         // Simulate shift
         path.add(new HiveLocation(currToQ, currToR)); // Simulate shift
         currFromQ = currToQ;
         currFromR = currToR;
 
-        if (!isPathStraightLine(startQ, startR, path)) return null; // 11a Een sprinkhaan verplaatst zich door in een rechte lijn een sprong te maken
+        if (!hiveGame.getBoard().isPathStraightLine(startQ, startR, path)) return null; // 11a Een sprinkhaan verplaatst zich door in een rechte lijn een sprong te maken
 
         if (currFromQ == endQ && currFromR == endR) {
             if (path.size() < 2) return null; // 11c Een sprinkhaan moet over minimaal één steen springen.
@@ -78,41 +78,5 @@ public class HiveInsectGrasshopper implements HiveInsect {
             }
         }
         return null;
-    }
-
-    /**
-     * Checks if the path is a straight line by checking direction of the current
-     * and next location l[i] and l[i + 1]. If somewhere in this process the old
-     * direction does not match the new direction the list does not contain a
-     * straight path to the destination.
-     * @param startQ
-     * @param startR
-     * @param pathWithoutFromCell
-     * @return
-     */
-    public boolean isPathStraightLine(int startQ, int startR, ArrayList<HiveLocation> pathWithoutFromCell){
-        ArrayList<HiveLocation> fullPath = new ArrayList();
-        fullPath.add(new HiveLocation(startQ, startR));
-        fullPath.addAll(pathWithoutFromCell);
-
-        HiveBoard.Direction oldDirection = null;
-        for(int i = 0; i < fullPath.size() - 1; i++){
-            HiveBoard.Direction newDirection = hiveGame.getBoard().getDirection(fullPath.get(i).getQ(), fullPath.get(i).getR(), fullPath.get(i + 1).getQ(), fullPath.get(i + 1).getR());
-            if (newDirection == null) return false;
-            if (oldDirection == null) oldDirection = newDirection;
-            if (!oldDirection.name().equals(newDirection.name())) return false;
-        }
-        return true;
-    }
-
-
-    public boolean pathIsFilledWithTiles(ArrayList<HiveLocation> path){
-        HiveCell currCell = null;
-        for(HiveLocation l : path){
-            currCell = hiveGame.getBoard().getCellAt(l.getQ(), l.getR());
-            if (currCell == null) return false;
-            if (currCell.getPlayerTilesAtCell().isEmpty()) return false;
-        }
-        return true;
     }
 }

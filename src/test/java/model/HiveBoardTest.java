@@ -4,7 +4,6 @@ import model.Tile.HiveInsectQueenBee;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -79,5 +78,39 @@ class HiveBoardTest {
         // Right up
         assertTrue(hiveBoard.getDirection(1,1,2,0) == HiveBoard.Direction.RIGHT_UP);
         assertTrue(hiveBoard.getDirection(0,-2,1,-3) == HiveBoard.Direction.RIGHT_UP);
+    }
+
+    @Test
+    void testPathIsStraightLine(){
+        HiveGame hiveGame = new HiveGame();
+        HiveBoard hiveBoard = hiveGame.getBoard();
+        ArrayList<HiveLocation> path = new ArrayList<>();
+        path.add(new HiveLocation(1,-1)); // 1st move
+        path.add(new HiveLocation(2,-2)); // 2nd move
+        assertTrue(hiveBoard.isPathStraightLine(0,0, path));
+        path.add(new HiveLocation(3,-3));
+        assertTrue(hiveBoard.isPathStraightLine(0,0, path));
+        path.add(new HiveLocation(3, -1));
+        assertTrue(!hiveBoard.isPathStraightLine(0,0, path));
+    }
+
+    @Test
+    void testPathIsFilledWithTiles() throws Hive.IllegalMove {
+        HiveGame hiveGame = new HiveGame();
+        HiveBoard hiveBoard = hiveGame.getBoard();
+        hiveGame.play(Hive.Tile.QUEEN_BEE, 0, 0); // wit
+        hiveGame.play(Hive.Tile.QUEEN_BEE, 1, 0); // zwart
+        hiveGame.play(Hive.Tile.SOLDIER_ANT, -1, 0); // wit
+        hiveGame.play(Hive.Tile.BEETLE, 2, -1); // zwart
+
+        ArrayList<HiveLocation> path = new ArrayList<>();
+        path.add(new HiveLocation(0,0));
+        path.add(new HiveLocation(1,0));
+        path.add(new HiveLocation(-1,0));
+        path.add(new HiveLocation(2,-1));
+        assertTrue(hiveBoard.isPathFilledWithTiles(path));
+
+        hiveGame.move(-1,0, 0,-1); // wit
+        assertTrue(!hiveBoard.isPathFilledWithTiles(path));
     }
 }
