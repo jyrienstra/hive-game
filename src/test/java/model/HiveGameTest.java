@@ -311,7 +311,7 @@ class HiveGameTest {
         hiveGame.play(Hive.Tile.QUEEN_BEE, 2, -1); // wit
         hiveGame.play(Hive.Tile.QUEEN_BEE, 1,0); // zwart
         hiveGame.play(Hive.Tile.BEETLE, 3, -1); // wit
-        hiveGame.play(Hive.Tile.SOLDIER_ANT, 1, 1); // zwart
+        hiveGame.play(Hive.Tile.BEETLE, 1, 1); // zwart
         hiveGame.move(3, -1, 2, 0); // wit Move naar onbezet veld
         hiveGame.move(1,1, 2, 0); // zwart move naar bezet veld
         assertThrows(Hive.IllegalMove.class, ()->{
