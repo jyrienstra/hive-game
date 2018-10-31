@@ -22,12 +22,11 @@ class HiveInsectSpiderTest {
     @Test
     void getValidPathContainsExpectedPath() throws Hive.IllegalMove {
         HiveGame hiveGame = new HiveGame();
-        HiveBoard hiveBoard = hiveGame.getBoard();
         hiveGame.play(Hive.Tile.QUEEN_BEE, 0,0); // wit
         hiveGame.play(Hive.Tile.QUEEN_BEE, 1, 0); // zwart
         hiveGame.play(Hive.Tile.BEETLE, -1, 1); // wit
         hiveGame.play(Hive.Tile.SPIDER, 2, 0); // zwart
-        HiveInsectSpider hiveInsectSpider = new HiveInsectSpider(hiveGame, hiveBoard);
+        HiveInsectSpider hiveInsectSpider = new HiveInsectSpider(hiveGame);
         ArrayList<HiveLocation> validPath = hiveInsectSpider.getValidPath(0,1,3,0);
         assertTrue(validPath.size() == 3);
         assertTrue(validPath.get(0).equals(new HiveLocation(1,1)));
@@ -39,12 +38,11 @@ class HiveInsectSpiderTest {
     @Test
     void testGetValidMoveThrowsExceptionWhenShiftingToFieldWhereSpiderIsAt() throws Hive.IllegalMove {
         HiveGame hiveGame = new HiveGame();
-        HiveBoard hiveBoard = hiveGame.getBoard();
         hiveGame.play(Hive.Tile.QUEEN_BEE, 0,0); // wit
         hiveGame.play(Hive.Tile.QUEEN_BEE, 1, 0); // zwart
         hiveGame.play(Hive.Tile.BEETLE, -1, 1); // wit
         hiveGame.play(Hive.Tile.SPIDER, 2, 0); // zwart
-        HiveInsectSpider hiveInsectSpider = new HiveInsectSpider(hiveGame, hiveBoard);
+        HiveInsectSpider hiveInsectSpider = new HiveInsectSpider(hiveGame);
         assertThrows(IllegalMoveSpider.class, ()->{
             ArrayList<HiveLocation> validPath = hiveInsectSpider.getValidPath(-1,2,2,0); // precies 3 schuiven maar cel bevat spider
         });
@@ -55,16 +53,15 @@ class HiveInsectSpiderTest {
     @Test
     void testGetValidMoveThrowsExceptionWhenSpiderIsShiftedOnCellThatIsNotEmptyAndNotADuplicateVisit1() throws Hive.IllegalMove {
         HiveGame hiveGame = new HiveGame();
-        HiveBoard hiveBoard = hiveGame.getBoard();
         hiveGame.play(Hive.Tile.QUEEN_BEE, 0,0); // wit
         hiveGame.play(Hive.Tile.QUEEN_BEE, 1, 0); // zwart
         hiveGame.play(Hive.Tile.BEETLE, -1, 1); // wit
         hiveGame.play(Hive.Tile.SPIDER, 2, 0); // zwart
-        HiveInsectSpider hiveInsectSpider = new HiveInsectSpider(hiveGame, hiveBoard);
+        HiveInsectSpider hiveInsectSpider = new HiveInsectSpider(hiveGame);
         ArrayList<HiveLocation> validPath = hiveInsectSpider.getValidPath(0,1,-2,1);
         HashSet<HiveLocation> visited = new HashSet<>();
         for(HiveLocation l : validPath){
-            HiveCell c = hiveBoard.getCellAt(l.getQ(), l.getR());
+            HiveCell c = hiveGame.getBoard().getCellAt(l.getQ(), l.getR());
             assertTrue(!visited.contains(l));
             assertTrue(c.getPlayerTilesAtCell().size() == 0);
             visited.add(l);
@@ -76,16 +73,15 @@ class HiveInsectSpiderTest {
     @Test
     void testGetValidMoveThrowsExceptionWhenSpiderIsShiftedOnCellThatIsNotEmptyAndNotADuplicateVisit2() throws Hive.IllegalMove {
         HiveGame hiveGame = new HiveGame();
-        HiveBoard hiveBoard = hiveGame.getBoard();
         hiveGame.play(Hive.Tile.QUEEN_BEE, 0,0); // wit
         hiveGame.play(Hive.Tile.QUEEN_BEE, 1, 0); // zwart
         hiveGame.play(Hive.Tile.BEETLE, -1, 1); // wit
         hiveGame.play(Hive.Tile.SPIDER, 2, 0); // zwart
-        HiveInsectSpider hiveInsectSpider = new HiveInsectSpider(hiveGame, hiveBoard);
+        HiveInsectSpider hiveInsectSpider = new HiveInsectSpider(hiveGame);
         ArrayList<HiveLocation> validPath = hiveInsectSpider.getValidPath(0,-1,3,-1);
         HashSet<HiveLocation> visited = new HashSet<>();
         for(HiveLocation l : validPath){
-            HiveCell c = hiveBoard.getCellAt(l.getQ(), l.getR());
+            HiveCell c = hiveGame.getBoard().getCellAt(l.getQ(), l.getR());
             assertTrue(!visited.contains(l));
             assertTrue(c.getPlayerTilesAtCell().size() == 0);
             visited.add(l);
@@ -96,19 +92,18 @@ class HiveInsectSpiderTest {
     @Test
     void testGetValidPathContainsValidShifts() throws Hive.IllegalMove {
         HiveGame hiveGame = new HiveGame();
-        HiveBoard hiveBoard = hiveGame.getBoard();
         hiveGame.play(Hive.Tile.QUEEN_BEE, 0, 0); // wit
         hiveGame.play(Hive.Tile.QUEEN_BEE, 1, 0); // zwart
         hiveGame.play(Hive.Tile.BEETLE, -1, 1); // wit
         hiveGame.play(Hive.Tile.SPIDER, 2, 0); // zwart
-        HiveInsectSpider hiveInsectSpider = new HiveInsectSpider(hiveGame, hiveBoard);
+        HiveInsectSpider hiveInsectSpider = new HiveInsectSpider(hiveGame);
         ArrayList<HiveLocation> validPath = hiveInsectSpider.getValidPath(0, -1, 3, -1);
         int fromQ = 0;
         int fromR = -1;
         for(HiveLocation l : validPath){
             int toQ = l.getQ();
             int toR = l.getR();
-            assertTrue(hiveGame.isValidShift(fromQ, fromR, toQ, toR));
+            assertTrue(hiveGame.getBoard().isValidShift(fromQ, fromR, toQ, toR));
             fromQ = l.getQ();
             fromR = l.getR();
         }

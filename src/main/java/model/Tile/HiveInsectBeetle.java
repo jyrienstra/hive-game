@@ -7,14 +7,15 @@ import java.util.ArrayList;
 
 /**
  * Een kever verplaatst zich door precies één keer te verschuiven.
+ *
+ * Een beetle stapt altijd maar één keer we hoeven dus niet echt te gaan schuiven in het bord. isValidShift() controleert dit namelijk.
+ * Stel we zouden meerdere keren kunnen schuiven dan moet het bord wel geüpdatet worden.
  */
 public class HiveInsectBeetle implements HiveInsect{
     HiveGame hiveGame;
-    HiveBoard hiveBoard;
 
-    public HiveInsectBeetle(HiveGame hiveGame, HiveBoard hiveBoard){
+    public HiveInsectBeetle(HiveGame hiveGame){
         this.hiveGame = hiveGame;
-        this.hiveBoard = hiveBoard;
     }
 
     @Override
@@ -31,7 +32,7 @@ public class HiveInsectBeetle implements HiveInsect{
     }
 
     private ArrayList<HiveLocation> getValidPath(int fromQ, int fromR, int toQ, int toR, int maxCellMove) {
-        ArrayList<HiveLocation> neighbours = hiveBoard.getNeighbourLocations(fromQ, fromR);
+        ArrayList<HiveLocation> neighbours = hiveGame.getBoard().getNeighbourLocations(fromQ, fromR);
         ArrayList<HiveLocation> validPath = null;
         for(HiveLocation n: neighbours){
             if (validPath != null) return validPath;
@@ -41,7 +42,7 @@ public class HiveInsectBeetle implements HiveInsect{
     }
 
     private ArrayList<HiveLocation> findValidPath(int currFromQ, int currFromR, int currToQ, int currToR, int endQ, int endR, int maxCellMove, ArrayList<HiveLocation> path) {
-        if (hiveGame.isValidShift(currFromQ, currFromR, currToQ, currToR)){
+        if (hiveGame.getBoard().isValidShift(currFromQ, currFromR, currToQ, currToR)){
             path.add(new HiveLocation(currToQ, currToR)); // Simulate shift
             currFromQ = currToQ;
             currFromR = currToR;
@@ -51,7 +52,7 @@ public class HiveInsectBeetle implements HiveInsect{
         if (currFromQ == endQ && currFromR == endR) return path;
         if (path.size() >= maxCellMove) return null;
 
-        ArrayList<HiveLocation> neighbours = hiveBoard.getNeighbourLocations(currFromQ, currFromR);
+        ArrayList<HiveLocation> neighbours = hiveGame.getBoard().getNeighbourLocations(currFromQ, currFromR);
         for(HiveLocation n: neighbours){
             currToQ = n.getQ();
             currToR = n.getR();

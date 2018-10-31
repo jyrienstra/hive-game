@@ -24,12 +24,11 @@ class HiveInsectGrasshopperTest {
     @Test
     void testGetValidMoveReturnsTheExpectedMoveWhenMakingAValidMove() throws Hive.IllegalMove {
         HiveGame hiveGame = new HiveGame();
-        HiveBoard hiveBoard = hiveGame.getBoard();
         hiveGame.play(Hive.Tile.QUEEN_BEE, 0,0); // wit
         hiveGame.play(Hive.Tile.QUEEN_BEE, 1, 0); // zwart
         hiveGame.play(Hive.Tile.BEETLE, -1, 1); // wit
         hiveGame.play(Hive.Tile.SOLDIER_ANT, 2, 0); // zwart
-        HiveInsectGrasshopper hiveInsectGrasshopper = new HiveInsectGrasshopper(hiveGame, hiveBoard);
+        HiveInsectGrasshopper hiveInsectGrasshopper = new HiveInsectGrasshopper(hiveGame);
         ArrayList<HiveLocation> validPath = hiveInsectGrasshopper.getValidPath(-1,1,1,-1);
         assertTrue(validPath.size() == 1);
         assertTrue(validPath.get(0).equals(new HiveLocation(1, -1)));
@@ -39,13 +38,12 @@ class HiveInsectGrasshopperTest {
     @Test
     void testGetValidMoveThrowsExceptionWhenAStraightJumpFromTheHopperIsNotPossibleToCell() throws Hive.IllegalMove {
         HiveGame hiveGame = new HiveGame();
-        HiveBoard hiveBoard = hiveGame.getBoard();
         hiveGame.play(Hive.Tile.QUEEN_BEE, 0,0); // wit
         hiveGame.play(Hive.Tile.QUEEN_BEE, 1, 0); // zwart
         hiveGame.play(Hive.Tile.BEETLE, -1, 1); // wit
         hiveGame.play(Hive.Tile.SOLDIER_ANT, 2, 0); // zwart
         hiveGame.play(Hive.Tile.SPIDER, -2, 2); // wit
-        HiveInsectGrasshopper hiveInsectGrasshopper = new HiveInsectGrasshopper(hiveGame, hiveBoard);
+        HiveInsectGrasshopper hiveInsectGrasshopper = new HiveInsectGrasshopper(hiveGame);
         assertThrows(IllegalMoveGrasshopper.class, ()-> {
             ArrayList<HiveLocation> validPath1 = hiveInsectGrasshopper.getValidPath(-2,2,0,1);
         });
@@ -60,18 +58,14 @@ class HiveInsectGrasshopperTest {
      @Test
      void testGetValidMoveThrowsExceptionWhenTheJumpIsNotOverAtLeastOneTile() throws Hive.IllegalMove {
          HiveGame hiveGame = new HiveGame();
-         HiveBoard hiveBoard = hiveGame.getBoard();
          hiveGame.play(Hive.Tile.QUEEN_BEE, 0,0); // wit
          hiveGame.play(Hive.Tile.QUEEN_BEE, 1, 0); // zwart
          hiveGame.play(Hive.Tile.BEETLE, -1, 1); // wit
          hiveGame.play(Hive.Tile.SOLDIER_ANT, 2, 0); // zwart
          hiveGame.play(Hive.Tile.SPIDER, -2, 2); // wit
-         HiveInsectGrasshopper hiveInsectGrasshopper = new HiveInsectGrasshopper(hiveGame, hiveBoard);
+         HiveInsectGrasshopper hiveInsectGrasshopper = new HiveInsectGrasshopper(hiveGame);
          assertThrows(IllegalMoveGrasshopper.class, ()->{
              ArrayList<HiveLocation> validPath1 = hiveInsectGrasshopper.getValidPath(0,1,1,1); // een cel verder
-         });
-         assertThrows(IllegalMoveGrasshopper.class, ()->{
-             ArrayList<HiveLocation> validPath2 = hiveInsectGrasshopper.getValidPath(0,1,2,1); // 2 cel verder maar geen tile ertussen
          });
      }
 
@@ -79,13 +73,12 @@ class HiveInsectGrasshopperTest {
      @Test
      void testGetValidMoveThrowsExceptionWhenTheJumpContainsEmptyFieldInBetween() throws Hive.IllegalMove {
          HiveGame hiveGame = new HiveGame();
-         HiveBoard hiveBoard = hiveGame.getBoard();
          hiveGame.play(Hive.Tile.QUEEN_BEE, 0,0); // wit
          hiveGame.play(Hive.Tile.QUEEN_BEE, 1, 0); // zwart
          hiveGame.play(Hive.Tile.BEETLE, -1, 1); // wit
          hiveGame.play(Hive.Tile.SOLDIER_ANT, 2, 0); // zwart
          hiveGame.play(Hive.Tile.SPIDER, -2, 2); // wit
-         HiveInsectGrasshopper hiveInsectGrasshopper = new HiveInsectGrasshopper(hiveGame, hiveBoard);
+         HiveInsectGrasshopper hiveInsectGrasshopper = new HiveInsectGrasshopper(hiveGame);
          assertThrows(IllegalMoveGrasshopper.class, ()->{
              ArrayList<HiveLocation> validPath2 = hiveInsectGrasshopper.getValidPath(0,1,2,1); // 2 cel verder maar er is een lege cell ertussen
          });
@@ -96,15 +89,17 @@ class HiveInsectGrasshopperTest {
     @Test
     void testGetValidMoveThrowsExceptionWhenToFieldIsNotEmpty() throws Hive.IllegalMove {
         HiveGame hiveGame = new HiveGame();
-        HiveBoard hiveBoard = hiveGame.getBoard();
         hiveGame.play(Hive.Tile.QUEEN_BEE, 0,0); // wit
         hiveGame.play(Hive.Tile.QUEEN_BEE, 1, 0); // zwart
         hiveGame.play(Hive.Tile.BEETLE, -1, 1); // wit
         hiveGame.play(Hive.Tile.SOLDIER_ANT, 2, 0); // zwart
         hiveGame.play(Hive.Tile.SPIDER, -2, 2); // wit
-        HiveInsectGrasshopper hiveInsectGrasshopper = new HiveInsectGrasshopper(hiveGame, hiveBoard);
+        HiveInsectGrasshopper hiveInsectGrasshopper = new HiveInsectGrasshopper(hiveGame);
         assertThrows(IllegalMoveGrasshopper.class, ()-> {
             ArrayList<HiveLocation> validPath = hiveInsectGrasshopper.getValidPath(-2,2,0,0);
+        });
+        assertThrows(IllegalMoveGrasshopper.class, ()-> {
+            ArrayList<HiveLocation> validPath = hiveInsectGrasshopper.getValidPath(0,0,2,0);
         });
     }
 }

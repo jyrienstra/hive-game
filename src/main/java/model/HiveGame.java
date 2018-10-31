@@ -27,11 +27,11 @@ public class HiveGame implements Hive {
         HivePlayer pWhite = new HivePlayer(Player.WHITE);
         hivePlayers.add(pBlack);
         hivePlayers.add(pWhite);
-        HiveInsectQueenBee queenBee = new HiveInsectQueenBee(this, hiveBoard);
-        HiveInsectSpider spider = new HiveInsectSpider(this, hiveBoard);
-        HiveInsectBeetle beetle = new HiveInsectBeetle(this, hiveBoard);
-        HiveInsectSoldierAnt soldierAnt = new HiveInsectSoldierAnt(this, hiveBoard);
-        HiveInsectGrasshopper grasshopper = new HiveInsectGrasshopper(this, hiveBoard);
+        HiveInsectQueenBee queenBee = new HiveInsectQueenBee(this);
+        HiveInsectSpider spider = new HiveInsectSpider(this);
+        HiveInsectBeetle beetle = new HiveInsectBeetle(this);
+        HiveInsectSoldierAnt soldierAnt = new HiveInsectSoldierAnt(this);
+        HiveInsectGrasshopper grasshopper = new HiveInsectGrasshopper(this);
         for(HivePlayer hivePlayer : hivePlayers){
             hivePlayer.addPlayerTile(new HivePlayerTile(hivePlayer, queenBee));
             hivePlayer.addPlayerTile(new HivePlayerTile(hivePlayer, spider));
@@ -110,73 +110,6 @@ public class HiveGame implements Hive {
     }
 
 
-    /**
-     * Shift a tile to a neighbour field.
-     * @param fromCell
-     * @param toCell
-     * @throws IllegalMove When the toCell is not a neighbour of the fromCell
-     * @throws IllegalMove When the toCell and fromCell have 0 neighbours in common, which means the tile will be lose when shifting
-     * @throws IllegalMove When the toCell and fromCell have >1 neighbours in common and we can't shift the tile because of a stack at a certain cell that is to high.
-     */
-    private void isValidShift(HiveCell fromCell, HiveCell toCell) throws IllegalMove{
-        ArrayList<HiveCell> neighbourCellsForFromCellAndToCell = new ArrayList<>();
-        int amountOfNeighbourTilesForToCellAndFromCell = 0;
-        ArrayList<HiveCell> fromCellNeighbours = fromCell.getNeighbourCells();
-        ArrayList<HiveCell> toCellNeighbours = toCell.getNeighbourCells();
-        if (!hiveBoard.isNeighbour(fromCell.getCoordinateQ(), fromCell.getCoordinateR(), toCell.getCoordinateQ(), toCell.getCoordinateR())) throw new IllegalMove("We kunnen niet schuiven sinds we de steen proberen te verplaatsen naar een vak die niet grenst aan onze oorsproonkelijke locatie.");
-        for(HiveCell a : fromCellNeighbours){
-            for(HiveCell b: toCellNeighbours){
-                // Buur cell voor zowel fromCell als toCell
-                if(a == b){
-                    neighbourCellsForFromCellAndToCell.add(a);
-                    if (a.getPlayerTilesAtCell().size()> 0) amountOfNeighbourTilesForToCellAndFromCell++;
-                }
-            }
-        }
-
-        // 6c Tijdens een verschuiving moet de steen continu in contact blijven met minstens één andere steen.
-        if (amountOfNeighbourTilesForToCellAndFromCell == 0) throw new IllegalMove("De fromCell en toCell hebben 0 gelijke buren wat betekent dat tijdens het schuiven de steen los komt van een andere steen, dit mag niet.");
-
-        // Als we niet minsten 2 buren hebben dan kunnen we altijd schuiven natuurlijk
-        if (amountOfNeighbourTilesForToCellAndFromCell > 1){
-            // 6b Kijk naar de hoogstes van de stenen of we kunnen schuiven als we meer dan 1 gelijke stenen als buren hebben voor toCell en fromCell
-            int cellLowestValue = 99;
-            for(HiveCell neighbourForAandB : neighbourCellsForFromCellAndToCell){
-                Stack<HivePlayerTile> tilesAtCell = neighbourForAandB.getPlayerTilesAtCell();
-                if (tilesAtCell.size() < cellLowestValue){
-                    cellLowestValue = tilesAtCell.size();
-                }
-            }
-            int cellHighestValue = toCell.getPlayerTilesAtCell().size();
-            if(fromCell.getPlayerTilesAtCell().size() - 1 > cellHighestValue){
-                cellHighestValue = fromCell.getPlayerTilesAtCell().size();
-            }
-            if(cellLowestValue > cellHighestValue){
-                throw new IllegalMove("We kunnen deze cell niet verplaatsten, sinds het schuiven niet past");
-            }
-        }
-    }
-
-    public boolean isValidShift(int fromQ, int fromR, int toQ, int toR){
-        try {
-            HiveCell fromCell = hiveBoard.getCellAt(fromQ, fromR);
-            HiveCell toCell = hiveBoard.getCellAt(toQ, toR);
-            if (fromCell == null){
-                fromCell = new HiveCell(fromQ, fromR);
-                hiveBoard.addHiveCell(fromCell);
-            }
-            if (toCell == null) {
-                toCell = new HiveCell(toQ, toR);
-                hiveBoard.addHiveCell(toCell);
-            }
-            isValidShift(fromCell, toCell);
-        } catch (IllegalMove illegalMove) {
-            return false;
-        }
-        return true;
-    }
-
-
     public void throwIllegalMoveWhenMoveIsNotValid(int fromQ, int fromR, int toQ, int toR) throws IllegalMove{
         HiveCell fromCell = hiveBoard.getCellAt(fromQ, fromR);
         if (fromCell == null) throw new IllegalMove("Er bestaat geen steen met deze coordinaten");
@@ -185,18 +118,6 @@ public class HiveGame implements Hive {
         if (!hiveBoard.playerHasPlayedQueenBee(currentPlayer)) throw new IllegalMove("Een speler mag pas stenen verplaatsen als zijn bijenkoningin gespeeld is");
         if (!hiveBoard.hasNeighbourPlayerTileBesidesCoordinate(toQ, toR)) throw new IllegalMove("Een steen moet na het verplaatsen in contact zijn met minstens één andere steen");
         if (!hiveBoard.allPlayerTilesStillConnectedAfterMoving(fromQ, fromR, toQ, toR)) throw new IllegalMove("Een steen mag niet verplaatst worden als er door het weghalen van de steen twee niet onderling verbonden groepen stenen ontstaan.");
-    }
-
-    public void makeMove(int fromQ, int fromR, int toQ, int toR){
-        HiveCell fromCell = hiveBoard.getCellAt(fromQ, fromR);
-        HiveCell toCell = hiveBoard.getCellAt(toQ, toR);
-        if (toCell == null) {
-            toCell = new HiveCell(toQ, toR);
-            hiveBoard.addHiveCell(toCell);
-        }
-        HivePlayerTile fromHivePlayerTile = fromCell.getTopPlayerTileFromCell();
-        toCell.addPlayerTile(fromCell.getTopPlayerTileFromCell());
-        fromCell.removePlayerTile(fromCell.getTopPlayerTileFromCell());
     }
 
 //    e. Elk van de types stenen heeft zijn eigen manier van verplaatsen.
@@ -214,7 +135,7 @@ public class HiveGame implements Hive {
         for (HiveLocation hiveLocation : validPath){
             sToQ = hiveLocation.getQ();
             sToR = hiveLocation.getR();
-            makeMove(sFromQ, sFromR, sToQ, sToR);
+            hiveBoard.makeMove(sFromQ, sFromR, sToQ, sToR);
             sFromQ = sToQ;
             sFromR = sToR;
         }

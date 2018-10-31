@@ -77,6 +77,10 @@ public class HiveCell {
         return playerTilesAtCell;
     }
 
+    public void setPlayerTilesAtCell(Stack<HivePlayerTile> playerTilesAtCell){
+        this.playerTilesAtCell = playerTilesAtCell;
+    }
+
     public int getCoordinateQ() {
         return coordinateQ;
     }

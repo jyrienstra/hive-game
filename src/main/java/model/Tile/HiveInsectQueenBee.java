@@ -11,16 +11,14 @@ import java.util.ArrayList;
  */
 public class HiveInsectQueenBee implements HiveInsect {
     HiveGame hiveGame;
-    HiveBoard hiveBoard;
 
-    public HiveInsectQueenBee(HiveGame hiveGame, HiveBoard hiveBoard){
+    public HiveInsectQueenBee(HiveGame hiveGame){
         this.hiveGame = hiveGame;
-        this.hiveBoard = hiveBoard;
     }
 
     @Override
     public ArrayList<HiveLocation> getValidPath(int fromQ, int fromR, int toQ, int toR) throws IllegalMoveQueenBee {
-        HiveCell toCell = hiveBoard.getCellAt(toQ, toR);
+        HiveCell toCell = hiveGame.getBoard().getCellAt(toQ, toR);
         if (toCell != null && !toCell.getPlayerTilesAtCell().isEmpty()) throw new IllegalMoveQueenBee("The QUEEN_BEE can only be moved to an empty cell");
 
         ArrayList<HiveLocation> validPath  = getValidPath(fromQ, fromR, toQ, toR, 1);
@@ -35,7 +33,7 @@ public class HiveInsectQueenBee implements HiveInsect {
     }
 
     public ArrayList<HiveLocation> getValidPath(int fromQ, int fromR, int toQ, int toR, int maxCellMove) {
-        ArrayList<HiveLocation> neighbours = hiveBoard.getNeighbourLocations(fromQ, fromR);
+        ArrayList<HiveLocation> neighbours = hiveGame.getBoard().getNeighbourLocations(fromQ, fromR);
         ArrayList<HiveLocation> validPath = null;
         for(HiveLocation n: neighbours){
             if (validPath != null) return validPath;
@@ -45,7 +43,8 @@ public class HiveInsectQueenBee implements HiveInsect {
     }
 
     public ArrayList<HiveLocation> findValidPath(int currFromQ, int currFromR, int currToQ, int currToR, int endQ, int endR, int maxCellMove, ArrayList<HiveLocation> path) {
-        if (hiveGame.isValidShift(currFromQ, currFromR, currToQ, currToR)){
+        if (hiveGame.getBoard().isValidShift(currFromQ, currFromR, currToQ, currToR)){
+            System.out.println(currFromQ + "," + currFromR + "to" + currToQ + "," +currToR);
             path.add(new HiveLocation(currToQ, currToR)); // Simulate shift
             currFromQ = currToQ;
             currFromR = currToR;
@@ -55,7 +54,7 @@ public class HiveInsectQueenBee implements HiveInsect {
         if (currFromQ == endQ && currFromR == endR) return path;
         if (path.size() >= maxCellMove) return null;
 
-        ArrayList<HiveLocation> neighbours = hiveBoard.getNeighbourLocations(currFromQ, currFromR);
+        ArrayList<HiveLocation> neighbours = hiveGame.getBoard().getNeighbourLocations(currFromQ, currFromR);
         for(HiveLocation n: neighbours){
             currToQ = n.getQ();
             currToR = n.getR();

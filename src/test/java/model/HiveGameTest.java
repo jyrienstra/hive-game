@@ -1,6 +1,7 @@
 package model;
 
 import model.Tile.*;
+import model.Tile.Exceptions.IllegalMoveQueenBee;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
@@ -101,11 +102,11 @@ class HiveGameTest {
         final Field field = hiveGame.getClass().getDeclaredField("hiveBoard");
         field.setAccessible(true);
         HiveBoard hiveBoard = (HiveBoard) field.get(hiveGame);
-        HiveInsectQueenBee queenBee = new HiveInsectQueenBee(hiveGame, hiveBoard);
-        HiveInsectSpider spider = new HiveInsectSpider(hiveGame, hiveBoard);
-        HiveInsectBeetle beetle = new HiveInsectBeetle(hiveGame, hiveBoard);
-        HiveInsectSoldierAnt soldierAnt = new HiveInsectSoldierAnt(hiveGame, hiveBoard);
-        HiveInsectGrasshopper grasshopper = new HiveInsectGrasshopper(hiveGame, hiveBoard);
+        HiveInsectQueenBee queenBee = new HiveInsectQueenBee(hiveGame);
+        HiveInsectSpider spider = new HiveInsectSpider(hiveGame);
+        HiveInsectBeetle beetle = new HiveInsectBeetle(hiveGame);
+        HiveInsectSoldierAnt soldierAnt = new HiveInsectSoldierAnt(hiveGame);
+        HiveInsectGrasshopper grasshopper = new HiveInsectGrasshopper(hiveGame);
         hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.WHITE), queenBee), 0, 0));
         hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), grasshopper), -1, 0));
         hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), soldierAnt), -1, 1));
@@ -123,11 +124,11 @@ class HiveGameTest {
         final Field field = hiveGame.getClass().getDeclaredField("hiveBoard");
         field.setAccessible(true);
         HiveBoard hiveBoard = (HiveBoard) field.get(hiveGame);
-        HiveInsectQueenBee queenBee = new HiveInsectQueenBee(hiveGame, hiveBoard);
-        HiveInsectSpider spider = new HiveInsectSpider(hiveGame, hiveBoard);
-        HiveInsectBeetle beetle = new HiveInsectBeetle(hiveGame, hiveBoard);
-        HiveInsectSoldierAnt soldierAnt = new HiveInsectSoldierAnt(hiveGame, hiveBoard);
-        HiveInsectGrasshopper grasshopper = new HiveInsectGrasshopper(hiveGame, hiveBoard);
+        HiveInsectQueenBee queenBee = new HiveInsectQueenBee(hiveGame);
+        HiveInsectSpider spider = new HiveInsectSpider(hiveGame);
+        HiveInsectBeetle beetle = new HiveInsectBeetle(hiveGame);
+        HiveInsectSoldierAnt soldierAnt = new HiveInsectSoldierAnt(hiveGame);
+        HiveInsectGrasshopper grasshopper = new HiveInsectGrasshopper(hiveGame);
         hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.WHITE), queenBee), 0, 0));
         hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), grasshopper), 0, -1));
         hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), soldierAnt), 1, -1));
@@ -147,11 +148,11 @@ class HiveGameTest {
         final Field field = hiveGame.getClass().getDeclaredField("hiveBoard");
         field.setAccessible(true);
         HiveBoard hiveBoard = (HiveBoard) field.get(hiveGame);
-        HiveInsectQueenBee queenBee = new HiveInsectQueenBee(hiveGame, hiveBoard);
-        HiveInsectSpider spider = new HiveInsectSpider(hiveGame, hiveBoard);
-        HiveInsectBeetle beetle = new HiveInsectBeetle(hiveGame, hiveBoard);
-        HiveInsectSoldierAnt soldierAnt = new HiveInsectSoldierAnt(hiveGame, hiveBoard);
-        HiveInsectGrasshopper grasshopper = new HiveInsectGrasshopper(hiveGame, hiveBoard);
+        HiveInsectQueenBee queenBee = new HiveInsectQueenBee(hiveGame);
+        HiveInsectSpider spider = new HiveInsectSpider(hiveGame);
+        HiveInsectBeetle beetle = new HiveInsectBeetle(hiveGame);
+        HiveInsectSoldierAnt soldierAnt = new HiveInsectSoldierAnt(hiveGame);
+        HiveInsectGrasshopper grasshopper = new HiveInsectGrasshopper(hiveGame);
         hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), queenBee), 0,0));
         hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), grasshopper), 0, -1));
         hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), soldierAnt), 1, -1));
@@ -172,11 +173,11 @@ class HiveGameTest {
         field.setAccessible(true);
         HiveBoard hiveBoard = (HiveBoard) field.get(hiveGame);
         // Surround the queen bee of white with 6 cells == white winner
-        HiveInsectQueenBee queenBee = new HiveInsectQueenBee(hiveGame, hiveBoard);
-        HiveInsectSpider spider = new HiveInsectSpider(hiveGame, hiveBoard);
-        HiveInsectBeetle beetle = new HiveInsectBeetle(hiveGame, hiveBoard);
-        HiveInsectSoldierAnt soldierAnt = new HiveInsectSoldierAnt(hiveGame, hiveBoard);
-        HiveInsectGrasshopper grasshopper = new HiveInsectGrasshopper(hiveGame, hiveBoard);
+        HiveInsectQueenBee queenBee = new HiveInsectQueenBee(hiveGame);
+        HiveInsectSpider spider = new HiveInsectSpider(hiveGame);
+        HiveInsectBeetle beetle = new HiveInsectBeetle(hiveGame);
+        HiveInsectSoldierAnt soldierAnt = new HiveInsectSoldierAnt(hiveGame);
+        HiveInsectGrasshopper grasshopper = new HiveInsectGrasshopper(hiveGame);
         hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.WHITE), queenBee), 0, 0));
         hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), grasshopper), -1, 0));
         hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), soldierAnt), -1, 1));
@@ -341,15 +342,15 @@ class HiveGameTest {
     @Test
     void testMoveTileThrowsIllegalMoveWhenShiftTileIsNotConnectedWhileShfitingTile() throws Hive.IllegalMove {
         HiveGame hiveGame = new HiveGame();
-        // wit 3-1 2-1 10
-        // zwart 30 21
-        // dan zwart shift 21 naar 1,1 (bijft tijdens schuiving niet verbonden)
         hiveGame.play(Hive.Tile.QUEEN_BEE, 3, -1); // wit
         hiveGame.play(Hive.Tile.QUEEN_BEE, 3, 0); // zwart
-        hiveGame.play(Hive.Tile.BEETLE, 2, -1); // wit
-        hiveGame.play(Hive.Tile.SOLDIER_ANT, 2, 1); // zwart
+        hiveGame.play(Hive.Tile.SOLDIER_ANT, 2, -1); // wit
+        hiveGame.play(Hive.Tile.BEETLE, 2, 1); // zwart
         hiveGame.play(Hive.Tile.BEETLE, 1, 0); // wit
         assertThrows(Hive.IllegalMove.class, ()-> {
+            // Beetle kan maar één stap doen
+            // 2,1 -> 1,1 dan zijn de tiles niet verbonden
+            // dus dit gaat fout
             hiveGame.move(2, 1, 1, 1);
         });
     }
@@ -366,44 +367,45 @@ class HiveGameTest {
         });
     }
 
-    // Expect true when calling isValidShift When the toCell is a neighbour of the fromCell
-    @Test
-    void testIsValidShiftSucceedsWhenShiftIsValid() throws Hive.IllegalMove {
-        HiveGame hiveGame = new HiveGame();
-        hiveGame.play(Hive.Tile.QUEEN_BEE, 0,0); // wit
-        hiveGame.play(Hive.Tile.QUEEN_BEE, 1, 0); // zwart
-        hiveGame.play(Hive.Tile.BEETLE, -1, 1); // wit
-        hiveGame.play(Hive.Tile.SOLDIER_ANT, 2, 0); // zwart
-        boolean valid = hiveGame.isValidShift(0,-1,1,-1);
-        assertTrue(valid == true);
-        boolean valid2 = hiveGame.isValidShift(1,1,2,1);
-        assertTrue(valid2 == true);
-    }
 
-    // Expect false when calling isValidShift When the toCell is not a neighbour of the fromCell
-    @Test
-    void testIsValidShiftFailsWhenToCellIsNotANeighbourOfFromCell() throws Hive.IllegalMove {
-        HiveGame hiveGame = new HiveGame();
-        hiveGame.play(Hive.Tile.QUEEN_BEE, 0,0); // wit
-        hiveGame.play(Hive.Tile.QUEEN_BEE, 1, 0); // zwart
-        hiveGame.play(Hive.Tile.BEETLE, -1, 1); // wit
-        hiveGame.play(Hive.Tile.SOLDIER_ANT, 2, 0); // zwart
-        boolean valid = hiveGame.isValidShift(0,-1,2,-1); // probeer een neppe cel, dit moet kunnen
-        assertTrue(valid == false);
-    }
-
-
-    // Expect false when calling isValidShift When the toCell and fromCell have 0 neighbours in common, which means the tile will be lose when shifting
-    @Test
-    void testIsValidShiftFailsWhenToCellAndFromCellHaveZeroNeighboursInCommon() throws Hive.IllegalMove {
-        HiveGame hiveGame = new HiveGame();
-        hiveGame.play(Hive.Tile.QUEEN_BEE, 0,0); // wit
-        hiveGame.play(Hive.Tile.QUEEN_BEE, 1, 0); // zwart
-        hiveGame.play(Hive.Tile.BEETLE, -1, 1); // wit
-        hiveGame.play(Hive.Tile.SOLDIER_ANT, 2, 0); // zwart
-        boolean valid = hiveGame.isValidShift(0,-1,1,-2); // probeer een neppe cel, dit moet kunnen
-        assertTrue(valid == false);
-    }
+//    // Expect true when calling isValidShift When the toCell is a neighbour of the fromCell
+//    @Test
+//    void testIsValidShiftSucceedsWhenShiftIsValid() throws Hive.IllegalMove {
+//        HiveGame hiveGame = new HiveGame();
+//        hiveGame.play(Hive.Tile.QUEEN_BEE, 0,0); // wit
+//        hiveGame.play(Hive.Tile.QUEEN_BEE, 1, 0); // zwart
+//        hiveGame.play(Hive.Tile.BEETLE, -1, 1); // wit
+//        hiveGame.play(Hive.Tile.SOLDIER_ANT, 2, 0); // zwart
+//        boolean valid = hiveGame.isValidShift(0,-1,1,-1);
+//        assertTrue(valid == true);
+//        boolean valid2 = hiveGame.isValidShift(1,1,2,1);
+//        assertTrue(valid2 == true);
+//    }
+//
+//    // Expect false when calling isValidShift When the toCell is not a neighbour of the fromCell
+//    @Test
+//    void testIsValidShiftFailsWhenToCellIsNotANeighbourOfFromCell() throws Hive.IllegalMove {
+//        HiveGame hiveGame = new HiveGame();
+//        hiveGame.play(Hive.Tile.QUEEN_BEE, 0,0); // wit
+//        hiveGame.play(Hive.Tile.QUEEN_BEE, 1, 0); // zwart
+//        hiveGame.play(Hive.Tile.BEETLE, -1, 1); // wit
+//        hiveGame.play(Hive.Tile.SOLDIER_ANT, 2, 0); // zwart
+//        boolean valid = hiveGame.isValidShift(0,-1,2,-1); // probeer een neppe cel, dit moet kunnen
+//        assertTrue(valid == false);
+//    }
+//
+//
+//    // Expect false when calling isValidShift When the toCell and fromCell have 0 neighbours in common, which means the tile will be lose when shifting
+//    @Test
+//    void testIsValidShiftFailsWhenToCellAndFromCellHaveZeroNeighboursInCommon() throws Hive.IllegalMove {
+//        HiveGame hiveGame = new HiveGame();
+//        hiveGame.play(Hive.Tile.QUEEN_BEE, 0,0); // wit
+//        hiveGame.play(Hive.Tile.QUEEN_BEE, 1, 0); // zwart
+//        hiveGame.play(Hive.Tile.BEETLE, -1, 1); // wit
+//        hiveGame.play(Hive.Tile.SOLDIER_ANT, 2, 0); // zwart
+//        boolean valid = hiveGame.isValidShift(0,-1,1,-2); // probeer een neppe cel, dit moet kunnen
+//        assertTrue(valid == false);
+//    }
 
     @Test
     void testIfFirstTurnFunctionHasExpectedResult() throws Hive.IllegalMove {
@@ -418,8 +420,59 @@ class HiveGameTest {
         assertTrue(hiveGame.getBoard().firstTurn() == false);
     }
 
-    // When the toCell and fromCell have >1 neighbours in common and we can't shift the tile because of a stack at a certain cell that is to high.
-    //@todo
+    @Test
+    void testExceptionIsThroneWhenTilesAreNotConnected() throws Hive.IllegalMove {
+        HiveGame hiveGame = new HiveGame();
+        hiveGame.play(Hive.Tile.QUEEN_BEE, 0,0); // wit
+        hiveGame.play(Hive.Tile.QUEEN_BEE, 1, 0); // zwart
+        hiveGame.play(Hive.Tile.BEETLE, -1, 1); // wit
+        hiveGame.play(Hive.Tile.SOLDIER_ANT, 2, 0); // zwart
+        assertThrows(Hive.IllegalMove.class, ()->{
+            // Want -1,1 is niet connected met 1,0 of -1,-1
+            hiveGame.move(0,0,1,-1);
+        });
+    }
+
+    @Test
+    void testExceptionIsThroneWhenTilesAreNotConnected2() throws Hive.IllegalMove {
+        HiveGame hiveGame = new HiveGame();
+        hiveGame.play(Hive.Tile.QUEEN_BEE, 0,0); // wit
+        hiveGame.play(Hive.Tile.QUEEN_BEE, 1, 0); // zwart
+        hiveGame.play(Hive.Tile.BEETLE, -1, 1); // wit
+        hiveGame.play(Hive.Tile.SOLDIER_ANT, 2, 0); // zwart
+        assertThrows(Hive.IllegalMove.class, ()->{
+            // Want -1,1 is niet connected met 1,0 of -1,0
+            hiveGame.move(0,0,-1, 0);
+        });
+    }
+
+    @Test
+    void testExceptionIsThroneWhenTilesAreNotConnected3() throws Hive.IllegalMove {
+        HiveGame hiveGame = new HiveGame();
+        hiveGame.play(Hive.Tile.QUEEN_BEE, 0,0); // wit
+        hiveGame.play(Hive.Tile.QUEEN_BEE, 1, 0); // zwart
+        hiveGame.play(Hive.Tile.BEETLE, -1, 1); // wit
+        hiveGame.play(Hive.Tile.SOLDIER_ANT, 2, 0); // zwart
+        hiveGame.play(Hive.Tile.SOLDIER_ANT, -2, 2); // wit
+        hiveGame.play(Hive.Tile.SOLDIER_ANT, 3, 0); // zwart
+        assertThrows(Hive.IllegalMove.class, ()->{
+            // Want -1,1 is niet connected met 1,0 of -1,-1
+            hiveGame.move(0,0,1, -1);
+        });
+    }
 
 
+    @Test
+    // Queen bee
+    void testExceptionIsThroneWhenTilesAreNotConnected4() throws Hive.IllegalMove {
+        HiveGame hiveGame = new HiveGame();
+        hiveGame.play(Hive.Tile.QUEEN_BEE, 0,0); // wit
+        hiveGame.play(Hive.Tile.QUEEN_BEE, 1, 0); // zwart
+        hiveGame.play(Hive.Tile.BEETLE, -1, 1); // wit
+        hiveGame.play(Hive.Tile.SOLDIER_ANT, 2, 0); // zwart
+        HiveInsectQueenBee hiveInsectQueenBee = new HiveInsectQueenBee(hiveGame);
+        assertThrows(Hive.IllegalMove.class, ()->{
+            hiveGame.move(0,0, 1,-1);
+        });
+    }
 }

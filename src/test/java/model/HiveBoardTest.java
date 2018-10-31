@@ -13,7 +13,7 @@ class HiveBoardTest {
     void testGetHiveCells(){
         HiveGame hiveGame = new HiveGame();
         HiveBoard hiveBoard = hiveGame.getBoard();
-        HiveInsectQueenBee hiveInsectQueenBee = new HiveInsectQueenBee(hiveGame, hiveBoard);
+        HiveInsectQueenBee hiveInsectQueenBee = new HiveInsectQueenBee(hiveGame);
         HivePlayer hivePlayer = new HivePlayer(Hive.Player.WHITE);
         HivePlayerTile hivePlayerTile = new HivePlayerTile(hivePlayer, hiveInsectQueenBee);
         HiveCell hiveCell1 = new HiveCell(hivePlayerTile,0, 0);

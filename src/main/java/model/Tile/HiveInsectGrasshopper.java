@@ -14,16 +14,14 @@ import java.util.ArrayList;
  */
 public class HiveInsectGrasshopper implements HiveInsect {
     HiveGame hiveGame;
-    HiveBoard hiveBoard;
 
-    public HiveInsectGrasshopper(HiveGame hiveGame, HiveBoard hiveBoard){
+    public HiveInsectGrasshopper(HiveGame hiveGame){
         this.hiveGame = hiveGame;
-        this.hiveBoard = hiveBoard;
     }
 
     @Override
     public ArrayList<HiveLocation> getValidPath(int fromQ, int fromR, int toQ, int toR) throws IllegalMoveGrasshopper {
-        HiveCell toCell = hiveBoard.getCellAt(toQ, toR);
+        HiveCell toCell = hiveGame.getBoard().getCellAt(toQ, toR);
         if (toCell != null && toCell.getPlayerTilesAtCell().size() > 0 && !toCell.getTopPlayerTileFromCell().getInsect().getTile().equals(Hive.Tile.GRASSHOPPER)) throw new IllegalMoveGrasshopper("11b Een sprinkhaan mag zich niet verplaatsen naar het veld waar hij al staat.");
         if (toCell != null && toCell.getPlayerTilesAtCell().size() > 0) throw new IllegalMoveGrasshopper("11d Een sprinkhaan mag niet naar een bezet veld springen.");
 
@@ -44,7 +42,7 @@ public class HiveInsectGrasshopper implements HiveInsect {
     }
 
     public ArrayList<HiveLocation> getValidPath(int fromQ, int fromR, int toQ, int toR, int maxCellMove) {
-        ArrayList<HiveLocation> neighbours = hiveBoard.getNeighbourLocations(fromQ, fromR);
+        ArrayList<HiveLocation> neighbours = hiveGame.getBoard().getNeighbourLocations(fromQ, fromR);
         ArrayList<HiveLocation> validPath = null;
         for(HiveLocation n: neighbours){
             if (validPath != null) return validPath;
@@ -69,7 +67,7 @@ public class HiveInsectGrasshopper implements HiveInsect {
         }
         if (path.size() >= maxCellMove) return null;
 
-        ArrayList<HiveLocation> neighbours = hiveBoard.getNeighbourLocations(currFromQ, currFromR);
+        ArrayList<HiveLocation> neighbours = hiveGame.getBoard().getNeighbourLocations(currFromQ, currFromR);
         for(HiveLocation n: neighbours){
             currToQ = n.getQ();
             currToR = n.getR();
@@ -99,7 +97,7 @@ public class HiveInsectGrasshopper implements HiveInsect {
 
         String oldDirection = null;
         for(int i = 0; i < fullPath.size() - 1; i++){
-            String newDirection = hiveBoard.getDirectionAsString(fullPath.get(i).getQ(), fullPath.get(i).getR(), fullPath.get(i + 1).getQ(), fullPath.get(i + 1).getR());
+            String newDirection = hiveGame.getBoard().getDirectionAsString(fullPath.get(i).getQ(), fullPath.get(i).getR(), fullPath.get(i + 1).getQ(), fullPath.get(i + 1).getR());
             if (newDirection == null) return false;
             if (oldDirection == null) oldDirection = newDirection;
             if (!oldDirection.equals(newDirection)) return false;
@@ -111,7 +109,7 @@ public class HiveInsectGrasshopper implements HiveInsect {
     public boolean pathIsFilledWithTiles(ArrayList<HiveLocation> path){
         HiveCell currCell = null;
         for(HiveLocation l : path){
-            currCell = hiveBoard.getCellAt(l.getQ(), l.getR());
+            currCell = hiveGame.getBoard().getCellAt(l.getQ(), l.getR());
             if (currCell == null) return false;
             if (currCell.getPlayerTilesAtCell().isEmpty()) return false;
         }

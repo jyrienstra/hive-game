@@ -13,17 +13,21 @@ import java.util.ArrayList;
  */
 public class HiveInsectSoldierAnt implements HiveInsect {
     HiveGame hiveGame;
-    HiveBoard hiveBoard;
 
-    public HiveInsectSoldierAnt(HiveGame hiveGame, HiveBoard hiveBoard){
+    public HiveInsectSoldierAnt(HiveGame hiveGame){
         this.hiveGame = hiveGame;
-        this.hiveBoard = hiveBoard;
     }
 
     @Override
     public ArrayList<HiveLocation> getValidPath(int fromQ, int fromR, int toQ, int toR) throws IllegalMoveSoldierAnt {
         ArrayList<HiveLocation> validPath  = getValidPath(fromQ, fromR, toQ, toR, Integer.MAX_VALUE);
+
         if (validPath == null) throw new IllegalMoveSoldierAnt("Could not find a valid path for the Soldier Ant to Q = " + toQ + " and R = " + toR);
+
+
+        for(HiveLocation location: validPath){
+            System.out.println("pad"+ location.getQ() +"," + location.getR());
+        }
 
         return validPath;
     }
@@ -34,21 +38,23 @@ public class HiveInsectSoldierAnt implements HiveInsect {
     }
 
     public ArrayList<HiveLocation> getValidPath(int fromQ, int fromR, int toQ, int toR, int maxCellMove) {
-        ArrayList<HiveLocation> neighbours = hiveBoard.getNeighbourLocations(fromQ, fromR);
+        ArrayList<HiveLocation> neighbours = hiveGame.getBoard().getNeighbourLocations(fromQ, fromR);
         ArrayList<HiveLocation> validPath = null;
         for(HiveLocation n: neighbours){
+            HiveBoard copyBoard = hiveGame.getBoard().clone();
+            validPath = findValidPath(fromQ, fromR, n.getQ(), n.getR(), toQ, toR, maxCellMove, new ArrayList<>(), copyBoard);
             if (validPath != null) return validPath;
-            validPath = findValidPath(fromQ, fromR, n.getQ(), n.getR(), toQ, toR, maxCellMove, new ArrayList<>());
         }
         return validPath;
     }
 
-    public ArrayList<HiveLocation> findValidPath(int currFromQ, int currFromR, int currToQ, int currToR, int endQ, int endR, int maxCellMove, ArrayList<HiveLocation> path) {
-        HiveCell currCell = hiveBoard.getCellAt(currToQ, currToR);
+    public ArrayList<HiveLocation> findValidPath(int currFromQ, int currFromR, int currToQ, int currToR, int endQ, int endR, int maxCellMove, ArrayList<HiveLocation> path, HiveBoard copyBoard) {
+        HiveCell currCell = copyBoard.getCellAt(currToQ, currToR);
         if (currCell.getPlayerTilesAtCell().size() > 0) return null; //Een soldatenmier mag zich niet verplaatsen naar het veld waar hij al staat. Een soldatenmier mag alleen verplaatst worden over en naar lege velden.
 
-        if (hiveGame.isValidShift(currFromQ, currFromR, currToQ, currToR)){
+        if (copyBoard.isValidShift(currFromQ, currFromR, currToQ, currToR)){
             path.add(new HiveLocation(currToQ, currToR)); // Simulate shift
+            copyBoard.makeMove(currFromQ, currFromR, currToQ, currToR);
             currFromQ = currToQ;
             currFromR = currToR;
         }else{
@@ -57,14 +63,18 @@ public class HiveInsectSoldierAnt implements HiveInsect {
         if (currFromQ == endQ && currFromR == endR) return path;
         if (path.size() >= maxCellMove) return null;
 
-        ArrayList<HiveLocation> neighbours = hiveBoard.getNeighbourLocations(currFromQ, currFromR);
+        ArrayList<HiveLocation> neighbours = copyBoard.getNeighbourLocations(currFromQ, currFromR);
         for(HiveLocation n: neighbours){
             currToQ = n.getQ();
             currToR = n.getR();
             HiveLocation toLocation = new HiveLocation(currToQ, currToR);
             if (!path.contains(toLocation)) {
-                if (findValidPath(currFromQ, currFromR, currToQ, currToR, endQ, endR, maxCellMove, path) != null) return path;
-                path.remove(new HiveLocation(currToQ, currToR));
+                if (findValidPath(currFromQ, currFromR, currToQ, currToR, endQ, endR, maxCellMove, path, copyBoard) != null) return path;
+                if (path.contains(new HiveLocation(currToQ, currToR))){
+                    path.remove(new HiveLocation(currToQ, currToR));
+                    copyBoard.undoMove(currFromQ, currFromR, currToQ, currToR);
+                    System.out.println();
+                }
             }
         }
         return null;
