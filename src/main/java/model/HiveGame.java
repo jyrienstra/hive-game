@@ -88,6 +88,7 @@ public class HiveGame implements Hive {
      * @throws IllegalMove When a tile is being placed besides a tile from the opponent after the first turn
      * @throws IllegalMove When the field q,r is not empty
      */
+    @Override
     public void play(Tile tile, int q, int r) throws IllegalMove {
         if (!currentPlayer.hasTile(tile)) throw new IllegalMove("Een speler mag alleen zijn eigen nog niet gespeelde stenen spelen.");
         if (currentPlayer.getTilesPlayed().size() == 3 && !tile.equals(Tile.QUEEN_BEE)) throw new IllegalMove("Als een speler al drie stenen gespeeld heeft maar zijn bijenkoningin nog niet dan moet deze gespeeld worden.");
@@ -110,7 +111,7 @@ public class HiveGame implements Hive {
     }
 
 
-    public void throwIllegalMoveWhenMoveIsNotValid(int fromQ, int fromR, int toQ, int toR) throws IllegalMove{
+    private void throwIllegalMoveWhenMoveIsNotValid(int fromQ, int fromR, int toQ, int toR) throws IllegalMove{
         HiveCell fromCell = hiveBoard.getCellAt(fromQ, fromR);
         if (fromCell == null) throw new IllegalMove("Er bestaat geen steen met deze coordinaten");
         if (fromCell.getPlayerTilesAtCell().isEmpty()) throw new IllegalMove("Er bestaat geen steen met deze coordinaten");
@@ -121,6 +122,7 @@ public class HiveGame implements Hive {
     }
 
 //    e. Elk van de types stenen heeft zijn eigen manier van verplaatsen.
+    @Override
     public void move(int fromQ, int fromR, int toQ, int toR) throws IllegalMove {
         throwIllegalMoveWhenMoveIsNotValid(fromQ, fromR, toQ,  toR);
 
@@ -142,6 +144,7 @@ public class HiveGame implements Hive {
         switchPlayer();
     }
 
+    @Override
     public void pass() throws IllegalMove {
         switchPlayer();
     }
@@ -152,6 +155,7 @@ public class HiveGame implements Hive {
      * @param player Player to check
      * @returnfgetNeighbourHiveCells
      */
+    @Override
     public boolean isWinner(Player player) {
         for(HiveCell hiveCell : hiveBoard.getHiveCells()){
             for (HivePlayerTile playerTile: hiveCell.getPlayerTilesAtCell()){
@@ -166,6 +170,7 @@ public class HiveGame implements Hive {
      * gelijkspel.
      * @return
      */
+    @Override
     public boolean isDraw() {
         boolean allPlayersAreWinners = true;
         for(HivePlayer hivePlayer : hivePlayers){

@@ -59,7 +59,7 @@ public class HiveInsectGrasshopper implements HiveInsect {
         currFromQ = currToQ;
         currFromR = currToR;
 
-        if (!pathIsStraightLine(startQ, startR, path)) return null; // 11a Een sprinkhaan verplaatst zich door in een rechte lijn een sprong te maken
+        if (!isPathStraightLine(startQ, startR, path)) return null; // 11a Een sprinkhaan verplaatst zich door in een rechte lijn een sprong te maken
 
         if (currFromQ == endQ && currFromR == endR) {
             if (path.size() < 2) return null; // 11c Een sprinkhaan moet over minimaal één steen springen.
@@ -90,17 +90,17 @@ public class HiveInsectGrasshopper implements HiveInsect {
      * @param pathWithoutFromCell
      * @return
      */
-    public boolean pathIsStraightLine(int startQ, int startR, ArrayList<HiveLocation> pathWithoutFromCell){
+    public boolean isPathStraightLine(int startQ, int startR, ArrayList<HiveLocation> pathWithoutFromCell){
         ArrayList<HiveLocation> fullPath = new ArrayList();
         fullPath.add(new HiveLocation(startQ, startR));
         fullPath.addAll(pathWithoutFromCell);
 
-        String oldDirection = null;
+        HiveBoard.Direction oldDirection = null;
         for(int i = 0; i < fullPath.size() - 1; i++){
-            String newDirection = hiveGame.getBoard().getDirectionAsString(fullPath.get(i).getQ(), fullPath.get(i).getR(), fullPath.get(i + 1).getQ(), fullPath.get(i + 1).getR());
+            HiveBoard.Direction newDirection = hiveGame.getBoard().getDirection(fullPath.get(i).getQ(), fullPath.get(i).getR(), fullPath.get(i + 1).getQ(), fullPath.get(i + 1).getR());
             if (newDirection == null) return false;
             if (oldDirection == null) oldDirection = newDirection;
-            if (!oldDirection.equals(newDirection)) return false;
+            if (!oldDirection.name().equals(newDirection.name())) return false;
         }
         return true;
     }

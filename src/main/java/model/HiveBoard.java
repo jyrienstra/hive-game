@@ -10,6 +10,11 @@ import java.util.Stack;
 public class HiveBoard {
     private ArrayList<HiveCell> hiveCells;
 
+    public enum Direction {
+        LEFT, LEFT_DOWN, LEFT_UP,
+        RIGHT, RIGHT_DOWN, RIGHT_UP
+    }
+
     public HiveBoard(){
         this.hiveCells = new ArrayList<HiveCell>();
     }
@@ -30,11 +35,9 @@ public class HiveBoard {
             toCell = new HiveCell(toQ, toR);
             this.addHiveCell(toCell);
         }
-//        System.out.println("move" + "from"+ fromQ + "," + fromR + "to"+ toQ + "," + toR);
         HivePlayerTile fromHivePlayerTile = fromCell.getTopPlayerTileFromCell();
         toCell.addPlayerTile(fromHivePlayerTile);
         fromCell.removePlayerTile(fromHivePlayerTile);
-//        System.out.println("cell" + toQ +"," + toR + "tile" + toCell.getTopPlayerTileFromCell());
     }
 
     /**
@@ -47,7 +50,6 @@ public class HiveBoard {
     public void undoMove(int fromQ, int fromR, int toQ, int toR){
         HiveCell fromCell = this.getCellAt(toQ, toR);
         HiveCell toCell = this.getCellAt(fromQ, fromR);
-//        System.out.println("undo move" + "from"+ fromCell.getCoordinateQ() + "," + fromCell.getCoordinateR() + "to"+ toCell.getCoordinateQ() + "," + toCell.getCoordinateR());
         HivePlayerTile fromHivePlayerTile = fromCell.getTopPlayerTileFromCell();
         toCell.addPlayerTile(fromHivePlayerTile);
         fromCell.removePlayerTile(fromHivePlayerTile);
@@ -99,7 +101,6 @@ public class HiveBoard {
         System.out.println(amountOfNeighbourTilesForToCellAndFromCell);
 
         // 6c Tijdens een verschuiving moet de steen continu in contact blijven met minstens één andere steen.
-        //@todo 6c klopt niet
         if (amountOfNeighbourTilesForToCellAndFromCell == 0) throw new Hive.IllegalMove("De fromCell en toCell hebben 0 gelijke buren wat betekent dat tijdens het schuiven de steen los komt van een andere steen, dit mag niet.");
 
         // Als we niet minsten 2 buren hebben dan kunnen we altijd schuiven natuurlijk
@@ -290,13 +291,22 @@ public class HiveBoard {
         return false;
     }
 
-    // A = first element
-    // B = next element
-    public String getDirectionAsString(int aQ, int aR, int bQ, int bR){
-        if (bQ == aQ - 1 && bR == aR + 1) return "Left down";
-        if (bQ == aQ && bR == aR + 1) return "Right down";
-        if (bQ == aQ && bR == aR - 1) return "Left up";
-        if (bQ == aQ + 1 && bR == aR - 1) return "Right up";
+    /***
+     * Get direction from position A to position B
+     * @param fQ fromQ
+     * @param fR fromR
+     * @param tQ toQ
+     * @param tR toR
+     * @return direction as a String value
+     */
+    public Direction getDirection(int fQ, int fR, int tQ, int tR){
+        if (tQ == fQ - 1 && tR == fR) return Direction.LEFT;
+        if (tQ == fQ + 1 && tR == fR) return Direction.RIGHT;
+        if (tQ == fQ - 1 && tR == fR + 1) return Direction.LEFT_DOWN;
+        if (tQ == fQ && tR == fR + 1) return Direction.RIGHT_DOWN;
+        if (tQ == fQ && tR == fR - 1) return Direction.LEFT_UP;
+        if (tQ == fQ + 1 && tR == fR - 1) return Direction.RIGHT_UP;
+        System.out.println(fQ + "," + fR + " > " + tQ + ","+ tR);
         return null;
     }
 

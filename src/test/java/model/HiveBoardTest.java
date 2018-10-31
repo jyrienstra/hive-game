@@ -57,4 +57,27 @@ class HiveBoardTest {
         }
         assertTrue(validNeighbours == 6);
     }
+
+    @Test
+    void testGetDirectionAsString(){
+        HiveBoard hiveBoard = new HiveBoard();
+        // Left
+        assertTrue(hiveBoard.getDirection(2,0, 1, 0) == HiveBoard.Direction.LEFT);
+        assertTrue(hiveBoard.getDirection(1,-2, 0, -2) == HiveBoard.Direction.LEFT);
+        // Left down
+        assertTrue(hiveBoard.getDirection(2,0,1,1) == HiveBoard.Direction.LEFT_DOWN);
+        assertTrue(hiveBoard.getDirection(-1,0,-2,1) == HiveBoard.Direction.LEFT_DOWN);
+        // Left up
+        assertTrue(hiveBoard.getDirection(1,-1,1,-2) == HiveBoard.Direction.LEFT_UP);
+        assertTrue(hiveBoard.getDirection(-1,0,-1,-1) == HiveBoard.Direction.LEFT_UP);
+        // Right
+        assertTrue(hiveBoard.getDirection(0,1,1,1) == HiveBoard.Direction.RIGHT);
+        assertTrue(hiveBoard.getDirection(1,-2,2,-2) == HiveBoard.Direction.RIGHT);
+        // Right down
+        assertTrue(hiveBoard.getDirection(1,-1,1,0) == HiveBoard.Direction.RIGHT_DOWN);
+        assertTrue(hiveBoard.getDirection(-1,-2,-1,-1) == HiveBoard.Direction.RIGHT_DOWN);
+        // Right up
+        assertTrue(hiveBoard.getDirection(1,1,2,0) == HiveBoard.Direction.RIGHT_UP);
+        assertTrue(hiveBoard.getDirection(0,-2,1,-3) == HiveBoard.Direction.RIGHT_UP);
+    }
 }
