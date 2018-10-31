@@ -4,6 +4,7 @@ import model.Tile.HiveInsectQueenBee;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Queue;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -112,5 +113,27 @@ class HiveBoardTest {
 
         hiveGame.move(-1,0, 0,-1); // wit
         assertTrue(!hiveBoard.isPathFilledWithTiles(path));
+    }
+
+    // Verkeerde shift > error
+    @Test
+    void testIsValidShiftHasExpectedResult() throws Hive.IllegalMove {
+        HiveGame hiveGame = new HiveGame();
+        HiveBoard hiveBoard = new HiveBoard();
+        hiveGame.play(Hive.Tile.QUEEN_BEE, 2,-1); // wit
+        hiveGame.play(Hive.Tile.QUEEN_BEE, 3,-1); // zwart
+        hiveGame.play(Hive.Tile.SOLDIER_ANT, 1,0); // wit
+        hiveGame.play(Hive.Tile.BEETLE, 3,0); // zwart
+        hiveGame.play(Hive.Tile.SOLDIER_ANT, 1,1); // wit
+        // Steen komt hier los te liggen tijdens schuiven
+        assertTrue(hiveBoard.isValidShift(3,0, 2,1) == false);
+        assertTrue(hiveBoard.isValidShift(1,1, 2,1) == false);
+        // Steen komt hier niet los te liggen tijdens schuiven
+        assertTrue(hiveBoard.isValidShift(1,1, 2,0) == true);
+        assertTrue(hiveBoard.isValidShift(3,0, 2,0) == true);
+        // Steen past niet door deze ruimte
+        assertTrue(hiveBoard.isValidShift(2,-1, 2, 0) == false);
+        assertTrue(hiveBoard.isValidShift(3,-1, 2, 0) == false);
+        assertTrue(hiveBoard.isValidShift(1,0, 2, 0) == false);
     }
 }
