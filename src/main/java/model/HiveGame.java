@@ -144,8 +144,14 @@ public class HiveGame implements Hive {
         switchPlayer();
     }
 
+    /**
+     * Een speler mag alleen passen als hij geen enkele steen kan spelen of
+     * verplaatsen.
+     * @throws IllegalMove wanneer een speler nog een steen kan spelen of verplaatsen
+     */
     @Override
     public void pass() throws IllegalMove {
+        //@todo
         switchPlayer();
     }
 

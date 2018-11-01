@@ -119,12 +119,13 @@ class HiveBoardTest {
     @Test
     void testIsValidShiftHasExpectedResult() throws Hive.IllegalMove {
         HiveGame hiveGame = new HiveGame();
-        HiveBoard hiveBoard = new HiveBoard();
         hiveGame.play(Hive.Tile.QUEEN_BEE, 2,-1); // wit
         hiveGame.play(Hive.Tile.QUEEN_BEE, 3,-1); // zwart
         hiveGame.play(Hive.Tile.SOLDIER_ANT, 1,0); // wit
         hiveGame.play(Hive.Tile.BEETLE, 3,0); // zwart
         hiveGame.play(Hive.Tile.SOLDIER_ANT, 1,1); // wit
+        // Haal bord op nadat tiles zijn geplaatst
+        HiveBoard hiveBoard = hiveGame.getBoard();
         // Steen komt hier los te liggen tijdens schuiven
         assertTrue(hiveBoard.isValidShift(3,0, 2,1) == false);
         assertTrue(hiveBoard.isValidShift(1,1, 2,1) == false);
