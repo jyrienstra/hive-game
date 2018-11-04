@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Stack;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -84,9 +85,9 @@ class HiveInsectSpiderTest {
         ArrayList<HiveLocation> validPath = hiveInsectSpider.getValidPath(2,0,0,-1);
         HashSet<HiveLocation> visited = new HashSet<>();
         for(HiveLocation l : validPath){
-            HiveCell c = hiveGame.getBoard().getCellAt(l.getQ(), l.getR());
+            Stack<HivePlayerTile> tilesAtLocation = hiveGame.getBoard().getPlayerTilesAt(l.getQ(), l.getR());
             assertTrue(!visited.contains(l));
-            assertTrue(c.getPlayerTilesAtCell().size() == 0);
+            assertTrue(tilesAtLocation.size() == 0);
             visited.add(l);
         }
     }
@@ -104,9 +105,9 @@ class HiveInsectSpiderTest {
         ArrayList<HiveLocation> validPath = hiveInsectSpider.getValidPath(2,0,-1,2);
         HashSet<HiveLocation> visited = new HashSet<>();
         for(HiveLocation l : validPath){
-            HiveCell c = hiveGame.getBoard().getCellAt(l.getQ(), l.getR());
+            Stack<HivePlayerTile> tilesAtLocation = hiveGame.getBoard().getPlayerTilesAt(l.getQ(), l.getR());
             assertTrue(!visited.contains(l));
-            assertTrue(c.getPlayerTilesAtCell().size() == 0);
+            assertTrue(tilesAtLocation.size() == 0);
             visited.add(l);
         }
     }

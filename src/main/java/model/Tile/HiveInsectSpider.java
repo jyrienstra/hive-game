@@ -4,6 +4,7 @@ import model.*;
 import model.Tile.Exceptions.IllegalMoveSpider;
 
 import java.util.ArrayList;
+import java.util.Stack;
 
 /**
  * a Een spin verplaatst zich door precies drie keer te verschuiven.
@@ -43,8 +44,9 @@ public class HiveInsectSpider implements HiveInsect {
     }
 
     public ArrayList<HiveLocation> findValidPath(int currFromQ, int currFromR, int currToQ, int currToR, int endQ, int endR, int maxCellMove, ArrayList<HiveLocation> path, HiveBoard copyBoard) {
-        HiveCell currCell = copyBoard.getCellAt(currToQ, currToR);
-        if (currCell.getPlayerTilesAtCell().size() > 0) return null; // 10b 10c Een spin mag zich niet verplaatsen naar het veld waar hij al staat. Een spin mag alleen verplaatst worden over en naar lege velden.
+        Stack<HivePlayerTile> tilesAtCurrentLocation = copyBoard.getPlayerTilesAt(currToQ, currToR);
+
+        if (tilesAtCurrentLocation.size() > 0) return null; // 10b 10c Een spin mag zich niet verplaatsen naar het veld waar hij al staat. Een spin mag alleen verplaatst worden over en naar lege velden.
         if (path.contains(new HiveLocation(currToQ, currToR))) return null; // 10d Een spin mag tijdens zijn verplaatsing geen stap maken naar een veld waar hij tijdens de verplaatsing al is geweest.
 
         if (copyBoard.isValidShift(currFromQ, currFromR, currToQ, currToR)){
@@ -71,7 +73,6 @@ public class HiveInsectSpider implements HiveInsect {
                 if (path.contains(new HiveLocation(currToQ, currToR))){
                     path.remove(new HiveLocation(currToQ, currToR));
                     copyBoard.undoMove(currFromQ, currFromR, currToQ, currToR);
-                    System.out.println();
                 }
             }
         }

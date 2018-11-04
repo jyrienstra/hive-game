@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Objects;
+
 /**
  * Represents a location on the HiveBoard
  * Each instance of HiveLocation is equal
@@ -34,5 +36,10 @@ public class HiveLocation {
 
         HiveLocation l = (HiveLocation) o;
         return (l.getR() == this.getR() && l.getQ() == this.getQ()); // Equal als aR is bR en aQ is bQ
+    }
+
+    @Override
+    public int hashCode(){
+        return q * 31 + r;
     }
 }

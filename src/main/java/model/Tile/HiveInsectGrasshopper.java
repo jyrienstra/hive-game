@@ -4,6 +4,7 @@ import model.*;
 import model.Tile.Exceptions.IllegalMoveGrasshopper;
 
 import java.util.ArrayList;
+import java.util.Stack;
 
 /**
  * Een sprinkhaan verplaatst zich door in een rechte lijn een sprong te maken naar een veld meteen achter een andere steen in de richting van de sprong.
@@ -21,9 +22,9 @@ public class HiveInsectGrasshopper implements HiveInsect {
 
     @Override
     public ArrayList<HiveLocation> getValidPath(int fromQ, int fromR, int toQ, int toR) throws IllegalMoveGrasshopper {
-        HiveCell toCell = hiveGame.getBoard().getCellAt(toQ, toR);
-        if (toCell != null && toCell.getPlayerTilesAtCell().size() > 0 && !toCell.getTopPlayerTileFromCell().getInsect().getTile().equals(Hive.Tile.GRASSHOPPER)) throw new IllegalMoveGrasshopper("11b Een sprinkhaan mag zich niet verplaatsen naar het veld waar hij al staat.");
-        if (toCell != null && toCell.getPlayerTilesAtCell().size() > 0) throw new IllegalMoveGrasshopper("11d Een sprinkhaan mag niet naar een bezet veld springen.");
+        Stack<HivePlayerTile> tilesAtToCell = hiveGame.getBoard().getPlayerTilesAt(toQ, toR);
+        if(!tilesAtToCell.isEmpty() && tilesAtToCell.peek().getInsect().equals(Hive.Tile.GRASSHOPPER)) throw new IllegalMoveGrasshopper("11b Een sprinkhaan mag zich niet verplaatsen naar het veld waar hij al staat.");
+        if (tilesAtToCell.size() > 0) throw new IllegalMoveGrasshopper("11d Een sprinkhaan mag niet naar een bezet veld springen.");
 
         ArrayList<HiveLocation> validPath  = getValidPath(fromQ, fromR, toQ, toR, Integer.MAX_VALUE);
         if (validPath == null) throw new IllegalMoveGrasshopper("Could not find a valid path for the Grashopper to Q = " + toQ + " and R = " + toR);

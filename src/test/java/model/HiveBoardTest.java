@@ -1,28 +1,26 @@
 package model;
 
-import model.Tile.HiveInsectQueenBee;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.Queue;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class HiveBoardTest {
-    @Test
-    void testGetHiveCells(){
-        HiveGame hiveGame = new HiveGame();
-        HiveBoard hiveBoard = hiveGame.getBoard();
-        HiveInsectQueenBee hiveInsectQueenBee = new HiveInsectQueenBee(hiveGame);
-        HivePlayer hivePlayer = new HivePlayer(Hive.Player.WHITE);
-        HivePlayerTile hivePlayerTile = new HivePlayerTile(hivePlayer, hiveInsectQueenBee);
-        HiveCell hiveCell1 = new HiveCell(hivePlayerTile,0, 0);
-        HiveCell hiveCell2 = new HiveCell(hivePlayerTile, -1, 0);
-        hiveBoard.addHiveCell(hiveCell1);
-        hiveBoard.addHiveCell(hiveCell2);
-        assertTrue(hiveBoard.getHiveCells().contains(hiveCell1));
-        assertTrue(hiveBoard.getHiveCells().contains(hiveCell2));
-    }
+//    @Test
+//    void testGetHiveCells(){
+//        HiveGame hiveGame = new HiveGame();
+//        HiveBoard hiveBoard = hiveGame.getBoard();
+//        HiveInsectQueenBee hiveInsectQueenBee = new HiveInsectQueenBee(hiveGame);
+//        HivePlayer hivePlayer = new HivePlayer(Hive.Player.WHITE);
+//        HivePlayerTile hivePlayerTile = new HivePlayerTile(hivePlayer, hiveInsectQueenBee);
+//        HiveCell hiveCell1 = new HiveCell(hivePlayerTile,0, 0);
+//        HiveCell hiveCell2 = new HiveCell(hivePlayerTile, -1, 0);
+//        hiveBoard.addHiveCell(hiveCell1);
+//        hiveBoard.addHiveCell(hiveCell2);
+//        assertTrue(hiveBoard.getHiveCells().contains(hiveCell1));
+//        assertTrue(hiveBoard.getHiveCells().contains(hiveCell2));
+//    }
 
     @Test
     void testGetNeighbourLocationsForCell1(){
@@ -93,6 +91,14 @@ class HiveBoardTest {
         assertTrue(hiveBoard.isPathStraightLine(0,0, path));
         path.add(new HiveLocation(3, -1));
         assertTrue(!hiveBoard.isPathStraightLine(0,0, path));
+    }
+
+    @Test
+    void testFirstTurnsHasExpectedResult() throws Hive.IllegalMove {
+        HiveGame hiveGame = new HiveGame();
+        HiveBoard hiveBoard = hiveGame.getBoard();
+        hiveGame.play(Hive.Tile.QUEEN_BEE, 0, 0); // wit
+        assertTrue(hiveGame.getBoard().isFirstTurn() == true);
     }
 
     @Test

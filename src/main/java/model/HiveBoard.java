@@ -1,14 +1,12 @@
 package model;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Stack;
+import java.util.*;
 
 /**
  * @todo bord converteren naar key,value hivelocation,stack
  */
 public class HiveBoard {
-    private ArrayList<HiveCell> hiveCells;
+    private HashMap<HiveLocation, Stack<HivePlayerTile>> board;
 
     public enum Direction {
         LEFT, LEFT_DOWN, LEFT_UP,
@@ -16,111 +14,205 @@ public class HiveBoard {
     }
 
     public HiveBoard(){
-        this.hiveCells = new ArrayList<HiveCell>();
-    }
-
-    public ArrayList<HiveCell> getHiveCells(){
-        return hiveCells;
-    }
-
-    public void addHiveCell(HiveCell hiveCell) {
-        hiveCells.add(hiveCell);
-        addNeighboursToCells();
-    }
-
-    public void makeMove(int fromQ, int fromR, int toQ, int toR){
-        HiveCell fromCell = this.getCellAt(fromQ, fromR);
-        HiveCell toCell = this.getCellAt(toQ, toR);
-        if (toCell == null) {
-            toCell = new HiveCell(toQ, toR);
-            this.addHiveCell(toCell);
-        }
-        HivePlayerTile fromHivePlayerTile = fromCell.getTopPlayerTileFromCell();
-        toCell.addPlayerTile(fromHivePlayerTile);
-        fromCell.removePlayerTile(fromHivePlayerTile);
+        this.board = new HashMap<>();
     }
 
     /**
-     * Provide same coordinates as makeMove, undo's that move
+     * Add a tile on top of the stack at location q,r if it already exists
+     * Else push a new entry at q,r with Stack<HivePlayerTile>
+     * @param q
+     * @param r
+     * @param hivePlayerTile
+     */
+    public void addPlayerTile(HivePlayerTile hivePlayerTile, int q, int r){
+        HiveLocation location = new HiveLocation(q,r);
+        Stack<HivePlayerTile> tilesAtLocation;
+        if (board.containsKey(location)){
+            tilesAtLocation = board.get(new HiveLocation(q,r));
+        }else{
+            tilesAtLocation = new Stack<HivePlayerTile>();
+        }
+        tilesAtLocation.push(hivePlayerTile);
+        board.put(location, tilesAtLocation);
+    }
+
+    /**
+     * Remove player from Stack<HivePlayerTile> at HiveLocation q,r
+     * and update this location. Or when stack size is empty
+     * after removal remove the entire entry from the
+     * board HashMap.
+     * @param q
+     * @param r
+     * @param hivePlayerTile
+     */
+    public void removePlayerTile(HivePlayerTile hivePlayerTile, int q, int r){
+        HiveLocation location = new HiveLocation(q,r);
+        Stack<HivePlayerTile> tilesAtLocation = board.get(new HiveLocation(q,r));
+        tilesAtLocation.remove(hivePlayerTile);
+        if (tilesAtLocation.size() == 0){
+            board.remove(location);
+        }else{
+            board.put(location, tilesAtLocation);
+        }
+    }
+
+    /**
+     * Get neigbours with locations((q1,r1),(q2,r2)..) for current location q,r
+     * We define an old cell location as a and a new cell location as b
+     * Neighbour cells are:
+     *      - bQ = aQ-1 && (bR = aR of bR = aR + 1)
+     *      - bQ = Aq && (bR = aR+1 of bR = aR-1)
+     *      - bQ = aQ+1 && (bR = aR of bR = aR -1)
+     * @param q
+     * @param r
+     * @return
+     */
+    public ArrayList<HiveLocation> getNeighbourLocations(int q, int r){
+        ArrayList<HiveLocation> neighbours = new ArrayList<>();
+        neighbours.add(new HiveLocation(q - 1, r)); // LEFT
+        neighbours.add(new HiveLocation(q + 1, r)); // RIGHT
+        neighbours.add(new HiveLocation(q - 1, r + 1)); // LEFT_DOWN
+        neighbours.add(new HiveLocation(q, r + 1)); // RIGHT_DOWN
+        neighbours.add(new HiveLocation(q, r - 1)); // LEFT_UP
+        neighbours.add(new HiveLocation(q + 1, r - 1)); // RIGHT_UP
+        return neighbours;
+    }
+
+    /**
+     * Retrieves all neighbour locations and checks
+     * if there is a tile placed at this location.
+     * @param q
+     * @param r
+     * @return true If one of the neighbours locations of q,r has a tile placed at it's location
+     */
+    public boolean hasNeighbourPlayerTile(int q, int r){
+        ArrayList<HiveLocation> neighbours = getNeighbourLocations(q,r);
+        for(HiveLocation n : neighbours){
+            if (hasTileAt(n.getQ(), n.getR())) return true;
+        }
+        return false;
+    }
+
+    /**
+     * Checks if there is a tile at HiveLocation q,r
+     * @param q
+     * @param r
+     * @return true If there is a tile at q,r
+     */
+    public boolean hasTileAt(int q, int r){
+        HiveLocation location = new HiveLocation(q,r);
+        if (board.containsKey(location)){
+            Stack<HivePlayerTile> tiles = board.get(location);
+            if (!tiles.isEmpty()) return true;
+        }
+        return false;
+    }
+
+    /**
+     * Remove tile at HiveLocation(fromQ, fromR) an
+     * add tile at HiveLocation(fromQ, fromR)
+     * @param fromQ
+     * @param fromR
+     * @param toQ
+     * @param toR
+     */
+    public void makeMove(int fromQ, int fromR, int toQ, int toR){
+        HivePlayerTile tile = board.get(new HiveLocation(fromQ, fromR)).peek();
+        removePlayerTile(tile, fromQ, fromR);
+
+        HiveLocation toLocation = new HiveLocation(toQ, toR);
+        Stack<HivePlayerTile> tilesAtToLocation;
+        if (!board.containsKey(toLocation)){
+            tilesAtToLocation = new Stack<>();
+        }else{
+            tilesAtToLocation = board.get(toLocation);
+        }
+        tilesAtToLocation.add(tile);
+        board.put(toLocation, tilesAtToLocation);
+    }
+
+    /**
+     * Provide same coordinates as makeMove()
+     * undo's that move by removing tile at HiveLocation(toQ, toR)
+     * and adding tile at HiveLocation(fromQ, fromR)
      * @param fromQ
      * @param fromR
      * @param toQ
      * @param toR
      */
     public void undoMove(int fromQ, int fromR, int toQ, int toR){
-        HiveCell fromCell = this.getCellAt(toQ, toR);
-        HiveCell toCell = this.getCellAt(fromQ, fromR);
-        HivePlayerTile fromHivePlayerTile = fromCell.getTopPlayerTileFromCell();
-        toCell.addPlayerTile(fromHivePlayerTile);
-        fromCell.removePlayerTile(fromHivePlayerTile);
+        makeMove(toQ, toR, fromQ, fromR);
     }
 
-    public boolean isValidShift(int fromQ, int fromR, int toQ, int toR){
-        try {
-            HiveCell fromCell = this.getCellAt(fromQ, fromR);
-            HiveCell toCell = this.getCellAt(toQ, toR);
-            if (fromCell == null){
-                fromCell = new HiveCell(fromQ, fromR);
-                this.addHiveCell(fromCell);
-            }
-            if (toCell == null) {
-                toCell = new HiveCell(toQ, toR);
-                this.addHiveCell(toCell);
-            }
-            isValidShift(fromCell, toCell);
-        } catch (Hive.IllegalMove illegalMove) {
-            return false;
+    /**
+     * Get Stack<HivePlayerTile> hivePlayerTiles at HiveLocation(q,r)
+     * @param q
+     * @param r
+     * @return
+     */
+    public Stack<HivePlayerTile> getPlayerTilesAt(int q, int r){
+        HiveLocation location = new HiveLocation(q,r);
+        Stack<HivePlayerTile> tilesAtLocation = null;
+        if (board.containsKey(location)){
+            tilesAtLocation = board.get(new HiveLocation(q,r));
+        }else{
+            tilesAtLocation = new Stack<>();
         }
-        return true;
+        return tilesAtLocation;
     }
 
     /**
      * Shift a tile to a neighbour field.
-     * @param fromCell
-     * @param toCell
-     * @throws Hive.IllegalMove When the toCell is not a neighbour of the fromCell
-     * @throws Hive.IllegalMove When the toCell and fromCell have 0 neighbours in common, which means the tile will be lose when shifting
-     * @throws Hive.IllegalMove When the toCell and fromCell have >1 neighbours in common and we can't shift the tile because of a stack at a certain cell that is to high.
+     * @param fromQ
+     * @param fromR
+     * @param toQ
+     * @param toR
+     * @return false When the toCell is not a neighbour of the fromCell
+     * @return false When the toCell and fromCell have 0 neighbours in common, which means the tile will be lose when shifting
+     * @return false When the toCell and fromCell have >1 neighbours in common and we can't shift the tile because of a stack at a certain cell that is to high.
+     * @return true
      */
-    private void isValidShift(HiveCell fromCell, HiveCell toCell) throws Hive.IllegalMove {
-        ArrayList<HiveCell> neighbourCellsForFromCellAndToCell = new ArrayList<>();
+    public boolean isValidShift(int fromQ, int fromR, int toQ, int toR) {
+        ArrayList<HiveLocation> neighbourLocationsForFromCellAndToCell = new ArrayList<>();
         int amountOfNeighbourTilesForToCellAndFromCell = 0;
-        ArrayList<HiveCell> fromCellNeighbours = fromCell.getNeighbourCells();
-        ArrayList<HiveCell> toCellNeighbours = toCell.getNeighbourCells();
-        System.out.println("from" + fromCell.getCoordinateQ() + "," + fromCell.getCoordinateR() + "to" + toCell.getCoordinateQ() + "," + toCell.getCoordinateR());
-        if (!this.isNeighbour(fromCell.getCoordinateQ(), fromCell.getCoordinateR(), toCell.getCoordinateQ(), toCell.getCoordinateR())) throw new Hive.IllegalMove("We kunnen niet schuiven sinds we de steen proberen te verplaatsen naar een vak die niet grenst aan onze oorsproonkelijke locatie.");
-        for(HiveCell a : fromCellNeighbours){
-            for(HiveCell b: toCellNeighbours){
-                // Buur cell voor zowel fromCell als toCell
-                if(a == b){
-                    neighbourCellsForFromCellAndToCell.add(a);
-                    if (a.getPlayerTilesAtCell().size()> 0) amountOfNeighbourTilesForToCellAndFromCell++;
+        ArrayList<HiveLocation> fromNeighbourLocations = getNeighbourLocations(fromQ, fromR);
+        ArrayList<HiveLocation> toNeighbourLocations = getNeighbourLocations(toQ, toR);
+        System.out.println("from" + fromQ + "," + fromR + "to" + toQ + "," + toR);
+        if (!this.isNeighbour(fromQ, fromR, toQ, toR)) return false; // We kunnen niet schuiven sinds we de steen proberen te verplaatsen naar een vak die niet grenst aan onze oorsproonkelijke locatie
+        for(HiveLocation a : fromNeighbourLocations){
+            for(HiveLocation b: toNeighbourLocations){
+                // Buur HiveLocation voor zowel from als to
+                if(a.equals(b)){
+                    neighbourLocationsForFromCellAndToCell.add(a);
+                    if (hasTileAt(a.getQ(), a.getR())) amountOfNeighbourTilesForToCellAndFromCell++;
                 }
             }
         }
-        System.out.println(amountOfNeighbourTilesForToCellAndFromCell);
 
         // 6c Tijdens een verschuiving moet de steen continu in contact blijven met minstens één andere steen.
-        if (amountOfNeighbourTilesForToCellAndFromCell == 0) throw new Hive.IllegalMove("De fromCell en toCell hebben 0 gelijke buren wat betekent dat tijdens het schuiven de steen los komt van een andere steen, dit mag niet.");
+        if (amountOfNeighbourTilesForToCellAndFromCell == 0) return false; // De fromCell en toCell hebben 0 gelijke buren wat betekent dat tijdens het schuiven de steen los komt van een andere steen, dit mag niet
 
         // Als we niet minsten 2 buren hebben dan kunnen we altijd schuiven natuurlijk
         if (amountOfNeighbourTilesForToCellAndFromCell > 1){
             // 6b Kijk naar de hoogstes van de stenen of we kunnen schuiven als we meer dan 1 gelijke stenen als buren hebben voor toCell en fromCell
             int cellLowestValue = 99;
-            for(HiveCell neighbourForAandB : neighbourCellsForFromCellAndToCell){
-                Stack<HivePlayerTile> tilesAtCell = neighbourForAandB.getPlayerTilesAtCell();
-                if (tilesAtCell.size() < cellLowestValue){
-                    cellLowestValue = tilesAtCell.size();
+            for(HiveLocation neighbourForAandB : neighbourLocationsForFromCellAndToCell){
+                Stack<HivePlayerTile> tilesAtLocation = board.get(neighbourForAandB);
+                if (tilesAtLocation.size() < cellLowestValue){
+                    cellLowestValue = tilesAtLocation.size();
                 }
             }
-            int cellHighestValue = toCell.getPlayerTilesAtCell().size();
-            if(fromCell.getPlayerTilesAtCell().size() - 1 > cellHighestValue){
-                cellHighestValue = fromCell.getPlayerTilesAtCell().size();
+            int sizePlayerTilesAtFromLocation = getPlayerTilesAt(fromQ, fromR).size();
+            int sizePlayerTilesAtToLocation = getPlayerTilesAt(toQ, toR).size();
+            int cellHighestValue = sizePlayerTilesAtFromLocation;
+            if (sizePlayerTilesAtToLocation > sizePlayerTilesAtFromLocation){
+                cellHighestValue = sizePlayerTilesAtToLocation;
             }
-            if(cellLowestValue > cellHighestValue){
-                throw new Hive.IllegalMove("We kunnen deze cell niet verplaatsten, sinds het schuiven niet past");
+            if (cellLowestValue <= cellHighestValue){
+                return false;
             }
         }
+        return true;
     }
 
     /**
@@ -133,9 +225,12 @@ public class HiveBoard {
      * @return false If there is no match
      */
     public boolean hasNeighbourPlayerTileBesidesCoordinateWithPlayer(HivePlayer hivePlayer, int q, int r){
-        for (HiveCell hiveCell : hiveCells){
-            if (isNeighbour(hiveCell.getCoordinateQ(), hiveCell.getCoordinateR(), q, r)){
-                if (hiveCell.getPlayerTilesAtCell().size() > 0 && hiveCell.getTopPlayerTileFromCell().getPlayer().equals(hivePlayer)) return true;
+        ArrayList<HiveLocation> neighbours = getNeighbourLocations(q, r);
+        for(HiveLocation neighbour : neighbours){
+            if (board.containsKey(neighbour)){
+                Stack<HivePlayerTile> tilesAtNeighbour;
+                tilesAtNeighbour = board.get(neighbour);
+                if (tilesAtNeighbour.size() > 0 && tilesAtNeighbour.peek().getPlayer().equals(hivePlayer)) return true;
             }
         }
         return false;
@@ -148,16 +243,30 @@ public class HiveBoard {
      * @return boolean hasNeighbourTile
      */
     public boolean hasNeighbourPlayerTileBesidesCoordinate(int q, int r){
-        for (HiveCell hiveCell : hiveCells){
-            if (isNeighbour(hiveCell.getCoordinateQ(), hiveCell.getCoordinateR(), q, r)) return true;
+        System.out.println("start " + q + "," + r);
+        ArrayList<HiveLocation> neighbours = getNeighbourLocations(q, r);
+
+        Iterator it = board.keySet().iterator();
+        while(it.hasNext()){
+            HiveLocation location = (HiveLocation) it.next();
+            System.out.println("In bord:" + location.getQ() + "," + location.getR());
+        }
+
+        for(HiveLocation neighbour : neighbours){
+            System.out.println("neighbour" + neighbour.getQ() + "," + neighbour.getR());
+            if (board.containsKey(neighbour)){
+                //@todo bug vind locatie niet
+                System.out.println(q + "," + r + "neighbour is " + neighbour.getQ() + "," + neighbour.getR());
+                Stack<HivePlayerTile> tilesAtNeighbour;
+                tilesAtNeighbour = board.get(neighbour);
+                if (tilesAtNeighbour.size() > 0) return true;
+            }
         }
         return false;
     }
 
     public boolean hasPlayerTileInBoard() {
-        for (HiveCell hiveCell : hiveCells) {
-            if (hiveCell.hasPlayerTile()) return true;
-        }
+        if (board.size() > 0) return true;
         return false;
     }
 
@@ -166,12 +275,8 @@ public class HiveBoard {
      * @return false When two or more cells exist in the board (both white and black made a turn)
      * @return true When <2 cells exist
      */
-    public boolean firstTurn() {
-        int tiles = 0;
-        for(HiveCell hiveCell : hiveCells){
-            if (hiveCell.getPlayerTilesAtCell().size() > 0) tiles++;
-            if (tiles >=2) return false;
-        }
+    public boolean isFirstTurn() {
+        if (board.size() >= 2) return false;
         return true;
     }
 
@@ -180,51 +285,15 @@ public class HiveBoard {
      * @return true If Tile.QueenBee exists on board
      */
     public boolean playerHasPlayedQueenBee(HivePlayer hivePlayer){
-        for(HiveCell hiveCell : hiveCells){
-            for(HivePlayerTile hivePlayerTile : hiveCell.getPlayerTilesAtCell()){
-                if(hivePlayerTile.getInsect().getTile().equals(Hive.Tile.QUEEN_BEE) && hivePlayerTile.getPlayer().equals(hivePlayer)) return true;
+        Iterator it = board.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry)it.next();
+            Stack<HivePlayerTile> tiles = (Stack<HivePlayerTile>) pair.getValue();
+            for(HivePlayerTile tile : tiles){
+                if (tile.getPlayer().equals(hivePlayer)) return true;
             }
         }
         return false;
-    }
-
-    /***
-     * Get HiveCell from HiveBoard that matches coordinate q and coordinate r
-     * If it does not exist a new cell is returned
-     * @param q
-     * @param r
-     * @return existingHiveCell if there is a HiveCell that matches with the param coordinates q,r
-     * @return newHiveCell If the cell does not exist yet
-     */
-    public HiveCell getCellAt(int q, int r){
-        for(HiveCell hiveCell : hiveCells) {
-            if (hiveCell.getCoordinateQ() == q && hiveCell.getCoordinateR() == r) return hiveCell;
-        }
-        HiveCell newCell = new HiveCell(q, r);
-        addHiveCell(newCell);
-        return newCell;
-    }
-
-    private void addNeighboursToCells(){
-        ArrayList<HiveCell> hiveCellsWithUpdatedNeighbours = new ArrayList<HiveCell>();
-        for(HiveCell hiveCell : hiveCells){
-            hiveCell = addNeighboursToCell(hiveCell);
-            hiveCellsWithUpdatedNeighbours.add(hiveCell);
-        }
-        this.hiveCells = hiveCellsWithUpdatedNeighbours;
-    }
-
-    private HiveCell addNeighboursToCell(HiveCell hiveCell){
-        ArrayList<HiveCell> neighbours = new ArrayList<HiveCell>();
-        for (HiveCell c : hiveCells){
-            if (isNeighbour(hiveCell.getCoordinateQ(), hiveCell.getCoordinateR(), c.getCoordinateQ(), c.getCoordinateR())) neighbours.add(c);
-            if (neighbours.size() == 6){ // Early exit
-                hiveCell.setNeighbourHiveCells(neighbours);
-                return hiveCell;
-            }
-        }
-        hiveCell.setNeighbourHiveCells(neighbours);
-        return hiveCell;
     }
 
     /**
@@ -238,15 +307,19 @@ public class HiveBoard {
      * @return true
      */
     public boolean allPlayerTilesStillConnectedAfterMoving(int fromQ, int fromR, int toQ, int toR){
-        HiveCell fromCell = getCellAt(fromQ, fromR);
-        HiveCell toCell = getCellAt(toQ, toR);
-        for(HiveCell neighbourFrom : fromCell.getNeighbourCells()) {
-            // Voor alle buren van de from cell
-            if (neighbourFrom.getPlayerTilesAtCell().size() > 0) {
-                // Waar van de to cell niet de buur is
-                if (toQ != neighbourFrom.getCoordinateQ() || toR != neighbourFrom.getCoordinateR()) {
-                    System.out.println("expect" + neighbourFrom.getCoordinateQ() + "," + neighbourFrom.getCoordinateR());
-                    if(!areCellsLinked(fromCell, toCell, neighbourFrom, new ArrayList<>())){
+        ArrayList<HiveLocation> neighboursFrom = getNeighbourLocations(fromQ, fromR);
+        ArrayList<HiveLocation> neighboursTo = getNeighbourLocations(toQ, toR);
+        HiveLocation fromLocation = new HiveLocation(fromQ, fromR);
+        HiveLocation toLocation = new HiveLocation(toQ, toR);
+
+        for(HiveLocation neighbourFrom : neighboursFrom) {
+            // Voor alle buren van de from cell met tiles
+            if (getPlayerTilesAt(neighbourFrom.getQ(), neighbourFrom.getR()).size() > 0) {
+                // Waar van de to cell niet de buur isot
+                if (toQ != neighbourFrom.getQ() || toR != neighbourFrom.getR()) {
+                    System.out.println("expect" + neighbourFrom.getQ() + "," + neighbourFrom.getR());
+                    if(!areCellsLinked(fromLocation, toLocation, neighbourFrom, new ArrayList<>())){
+                        System.out.println("hier komen we nooit");
                         // Als één van de buren niet verbonden is met de toCell return false
                         return false;
                     }
@@ -261,22 +334,38 @@ public class HiveBoard {
      * because that cell will be non existend after moving but is currenty still in the
      * board.
      */
-    private boolean areCellsLinked(HiveCell cellToMove, HiveCell toCell, HiveCell currentCell, ArrayList<HiveCell> visited){
-        visited.add(currentCell);
-        if (currentCell.getCoordinateQ() == toCell.getCoordinateQ() && currentCell.getCoordinateR() == toCell.getCoordinateR()){
+    private boolean areCellsLinked(HiveLocation locationToMove, HiveLocation toLocation, HiveLocation currentLocation, ArrayList<HiveLocation> visited){
+        System.out.println(currentLocation.getQ() + "," + currentLocation.getR());
+        visited.add(currentLocation);
+
+        if (currentLocation.getQ() == toLocation.getQ() && currentLocation.getR() == toLocation.getR()){
             return true;
         }
 
-        for (HiveCell n: currentCell.getNeighbourCells()){
-            if (!visited.contains(n) && n != cellToMove){
-                if (areCellsLinked(cellToMove, toCell, n, visited)) return true;
+        if (!board.containsKey(currentLocation)) return false; // geen tile op deze locatie
+
+        if (currentLocation.getQ() == locationToMove.getQ() && currentLocation.getR() == locationToMove.getR()) return false; // mag niet via de tile die verplaatst wordt
+
+
+        for (HiveLocation n: getNeighbourLocations(currentLocation.getQ(), currentLocation.getR())){
+            System.out.println("n: " + n.getQ() + "," + n.getR());
+            if (!visited.contains(n)){
+                System.out.println("b: " + n.getQ() + "," + n.getR()) ;
+                if (areCellsLinked(locationToMove, toLocation, n, visited)) return true;
             }
         }
         return false;
     }
 
-    // Q=x=row
-    // R=y=col
+    /**
+     * Check if location a and location b are neighbours of eachother
+     * @param aQ
+     * @param aR
+     * @param bQ
+     * @param bR
+     * @return true if location(aQ,aR) is a neighbour of location(bQ, bR)
+     * @return false
+     */
     public boolean isNeighbour(int aQ, int aR, int bQ, int bR){
         // Als beide cellen niet hetzelfde zijn
         if(!(aQ == bQ && aR == bR)){
@@ -311,50 +400,48 @@ public class HiveBoard {
     }
 
     /**
-     * Get neigbours with locations((q1,r1),(q2,r2)..) for current location q,r
-     * We define an old cell location as a and a new cell location as b
-     * Neighbour cells are:
-     *      - bQ = aQ-1 && (bR = aR of bR = aR + 1)
-     *      - bQ = Aq && (bR = aR+1 of bR = aR-1)
-     *      - bQ = aQ+1 && (bR = aR of bR = aR -1)
-     * @param q
-     * @param r
-     * @return
-     */
-    public ArrayList<HiveLocation> getNeighbourLocations(int q, int r){
-        ArrayList<HiveLocation> neighbourLocations = new ArrayList<>();
-        neighbourLocations.add(new HiveLocation(q - 1, r));
-        neighbourLocations.add(new HiveLocation(q - 1, r + 1));
-        neighbourLocations.add(new HiveLocation(q, r + 1));
-        neighbourLocations.add(new HiveLocation(q, r - 1));
-        neighbourLocations.add(new HiveLocation(q + 1, r));
-        neighbourLocations.add(new HiveLocation(q + 1, r - 1));
-        return neighbourLocations;
-    }
-
-    /**
-     * Overwrite clone function because we want to correctly add neighbours to cells
+     * Clone HiveBoard by deep copying all values in the board
      * @return
      */
     @Override
     public HiveBoard clone(){
         HiveBoard copyBoard = new HiveBoard();
-        for(HiveCell hiveCell : hiveCells){
-            HiveCell c = new HiveCell(hiveCell.getCoordinateQ(), hiveCell.getCoordinateR());
-            c.setNeighbourHiveCells(new ArrayList<>(hiveCell.getNeighbourCells()));
-            Stack<HivePlayerTile> hivePlayerTiles = (Stack<HivePlayerTile>) hiveCell.getPlayerTilesAtCell().clone();
-            c.setPlayerTilesAtCell(hivePlayerTiles);
-            copyBoard.addHiveCell(c);
+        Iterator it = this.getBoard().entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry)it.next();
+            HiveLocation location = (HiveLocation) pair.getKey();
+            Stack<HivePlayerTile> oldTilesAtLocation = (Stack<HivePlayerTile>) pair.getValue();
+            Stack<HivePlayerTile> copyTilesAtLocation = (Stack<HivePlayerTile>) oldTilesAtLocation.clone();
+            copyBoard.getBoard().put(location, copyTilesAtLocation);
         }
         return copyBoard;
     }
 
+    /**
+     * Get board
+     * @return
+     */
+    public HashMap<HiveLocation, Stack<HivePlayerTile>> getBoard(){
+        return this.board;
+    }
+
+    /**
+     * Set board
+     * @param board
+     */
+    public void setBoard(HashMap<HiveLocation, Stack<HivePlayerTile>> board){
+        this.board = board;
+    }
+
+    /**
+     * Check if there is a tile at every location in the provided
+     * parameter path
+     * @param path
+     * @return True if all elements in path have a tile
+     */
     public boolean isPathFilledWithTiles(ArrayList<HiveLocation> path){
-        HiveCell currCell = null;
         for(HiveLocation l : path){
-            currCell = getCellAt(l.getQ(), l.getR());
-            if (currCell == null) return false;
-            if (currCell.getPlayerTilesAtCell().isEmpty()) return false;
+            if (!hasTileAt(l.getQ(), l.getR())) return false;
         }
         return true;
     }

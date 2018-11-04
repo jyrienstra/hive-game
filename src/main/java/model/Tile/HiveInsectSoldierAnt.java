@@ -5,6 +5,7 @@ import model.*;
 import model.Tile.Exceptions.IllegalMoveSoldierAnt;
 
 import java.util.ArrayList;
+import java.util.Stack;
 
 /**
  * Een soldatenmier verplaatst zich door een onbeperkt aantal keren te verschuiven.
@@ -49,8 +50,8 @@ public class HiveInsectSoldierAnt implements HiveInsect {
     }
 
     public ArrayList<HiveLocation> findValidPath(int currFromQ, int currFromR, int currToQ, int currToR, int endQ, int endR, int maxCellMove, ArrayList<HiveLocation> path, HiveBoard copyBoard) {
-        HiveCell currCell = copyBoard.getCellAt(currToQ, currToR);
-        if (currCell.getPlayerTilesAtCell().size() > 0) return null; //Een soldatenmier mag zich niet verplaatsen naar het veld waar hij al staat. Een soldatenmier mag alleen verplaatst worden over en naar lege velden.
+        Stack<HivePlayerTile> tilesAtCurrentLocation = copyBoard.getPlayerTilesAt(currToQ, currToR);
+        if (tilesAtCurrentLocation.size() > 0) return null; //Een soldatenmier mag zich niet verplaatsen naar het veld waar hij al staat. Een soldatenmier mag alleen verplaatst worden over en naar lege velden.
 
         if (copyBoard.isValidShift(currFromQ, currFromR, currToQ, currToR)){
             path.add(new HiveLocation(currToQ, currToR)); // Simulate shift

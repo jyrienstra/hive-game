@@ -4,6 +4,7 @@ import model.*;
 import model.Tile.Exceptions.IllegalMoveQueenBee;
 
 import java.util.ArrayList;
+import java.util.Stack;
 
 /**
  * a. De bijenkoningin verplaatst zich door precies één keer te verschuiven.
@@ -18,8 +19,8 @@ public class HiveInsectQueenBee implements HiveInsect {
 
     @Override
     public ArrayList<HiveLocation> getValidPath(int fromQ, int fromR, int toQ, int toR) throws IllegalMoveQueenBee {
-        HiveCell toCell = hiveGame.getBoard().getCellAt(toQ, toR);
-        if (toCell != null && !toCell.getPlayerTilesAtCell().isEmpty()) throw new IllegalMoveQueenBee("The QUEEN_BEE can only be moved to an empty cell");
+        Stack<HivePlayerTile> tilesAtToCell = hiveGame.getBoard().getPlayerTilesAt(toQ, toR);
+        if (!tilesAtToCell.isEmpty()) throw new IllegalMoveQueenBee("The QUEEN_BEE can only be moved to an empty HiveLocation");
 
         ArrayList<HiveLocation> validPath  = getValidPath(fromQ, fromR, toQ, toR, 1);
         if (validPath == null) throw new IllegalMoveQueenBee("Could not find a valid path for the QueenBee to Q = " + toQ + " and R = " + toR);

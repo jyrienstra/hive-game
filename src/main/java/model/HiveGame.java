@@ -2,8 +2,8 @@ package model;
 
 import model.Tile.*;
 
-import java.lang.reflect.Executable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Stack;
 
 
@@ -94,28 +94,19 @@ public class HiveGame implements Hive {
         if (currentPlayer.getTilesPlayed().size() == 3 && !tile.equals(Tile.QUEEN_BEE)) throw new IllegalMove("Als een speler al drie stenen gespeeld heeft maar zijn bijenkoningin nog niet dan moet deze gespeeld worden.");
 
         HivePlayerTile tileFromCurrentPlayer = currentPlayer.getTile(tile);
-        HiveCell existingHiveCell = hiveBoard.getCellAt(q, r);
-        if (existingHiveCell == null){
-            if(hiveBoard.hasPlayerTileInBoard() && !hiveBoard.hasNeighbourPlayerTileBesidesCoordinate(q, r)) throw new IllegalMove("Er liggen al stenen op het bord. De steen moet dus naast een andere steen gespeeld worden");
-            if (!hiveBoard.firstTurn() && hiveBoard.hasNeighbourPlayerTileBesidesCoordinateWithPlayer(getOtherPlayer(), q, r)) throw new IllegalMove("Alleen in de eerste beurt is het toegestaan om een insect tegen de tegenstander aan te leggen.");
-            hiveBoard.addHiveCell(new HiveCell(tileFromCurrentPlayer, q, r));
-            currentPlayer.removePlayerTile(tileFromCurrentPlayer);
-        }else{
-            if (existingHiveCell.hasPlayerTile()) throw new IllegalMove("Dit veld is niet leeg. De nieuwe steen kan hier dus niet gespeeld worden");
-            if (hiveBoard.hasPlayerTileInBoard() && !existingHiveCell.hasNeighbourPlayerTile()) throw new IllegalMove("Er liggen al stenen op het bord. De steen moet dus naast een andere steen gespeeld worden");
-            if (!hiveBoard.firstTurn() && hiveBoard.hasNeighbourPlayerTileBesidesCoordinateWithPlayer(getOtherPlayer(), q, r)) throw new IllegalMove("Alleen in de eerste beurt is het toegestaan om een insect tegen de tegenstander aan te leggen.");
-            existingHiveCell.addPlayerTile(tileFromCurrentPlayer);
-            currentPlayer.removePlayerTile(tileFromCurrentPlayer);
-        }
+        if (hiveBoard.hasTileAt(q,r)) throw new IllegalMove("Dit veld is niet leeg. De nieuwe steen kan hier dus niet gespeeld worden");
+        if(hiveBoard.hasPlayerTileInBoard() && !hiveBoard.hasNeighbourPlayerTileBesidesCoordinate(q, r)) throw new IllegalMove("Er liggen al stenen op het bord. De steen moet dus naast een andere steen gespeeld worden");
+        if (!hiveBoard.isFirstTurn() && hiveBoard.hasNeighbourPlayerTileBesidesCoordinateWithPlayer(getOtherPlayer(), q, r)) throw new IllegalMove("Alleen in de eerste beurt is het toegestaan om een insect tegen de tegenstander aan te leggen.");
+
+        hiveBoard.addPlayerTile(tileFromCurrentPlayer, q, r);
+        currentPlayer.removePlayerTile(tileFromCurrentPlayer);
         switchPlayer();
     }
 
 
     private void throwIllegalMoveWhenMoveIsNotValid(int fromQ, int fromR, int toQ, int toR) throws IllegalMove{
-        HiveCell fromCell = hiveBoard.getCellAt(fromQ, fromR);
-        if (fromCell == null) throw new IllegalMove("Er bestaat geen steen met deze coordinaten");
-        if (fromCell.getPlayerTilesAtCell().isEmpty()) throw new IllegalMove("Er bestaat geen steen met deze coordinaten");
-        if (!fromCell.getTopPlayerTileFromCell().getPlayer().equals(currentPlayer)) throw new IllegalMove("Deze steen is van een andere speler. De steen mag dus niet verplaatst worden");
+        if (!hiveBoard.hasTileAt(fromQ, fromR)) throw new IllegalMove("Er bestaat geen steen met deze coordinaten");
+        if (!hiveBoard.getPlayerTilesAt(fromQ, fromR).peek().getPlayer().equals(currentPlayer)) throw new IllegalMove("Deze steen is van een andere speler. De steen mag dus niet verplaatst worden");
         if (!hiveBoard.playerHasPlayedQueenBee(currentPlayer)) throw new IllegalMove("Een speler mag pas stenen verplaatsen als zijn bijenkoningin gespeeld is");
         if (!hiveBoard.hasNeighbourPlayerTileBesidesCoordinate(toQ, toR)) throw new IllegalMove("Een steen moet na het verplaatsen in contact zijn met minstens één andere steen");
         if (!hiveBoard.allPlayerTilesStillConnectedAfterMoving(fromQ, fromR, toQ, toR)) throw new IllegalMove("Een steen mag niet verplaatst worden als er door het weghalen van de steen twee niet onderling verbonden groepen stenen ontstaan.");
@@ -126,8 +117,7 @@ public class HiveGame implements Hive {
     public void move(int fromQ, int fromR, int toQ, int toR) throws IllegalMove {
         throwIllegalMoveWhenMoveIsNotValid(fromQ, fromR, toQ,  toR);
 
-        HiveCell fromCell = hiveBoard.getCellAt(fromQ, fromR);
-        HivePlayerTile fromHivePlayerTile = fromCell.getTopPlayerTileFromCell();
+        HivePlayerTile fromHivePlayerTile = getBoard().getPlayerTilesAt(fromQ, fromR).peek();
 
         ArrayList<HiveLocation> validPath = fromHivePlayerTile.getInsect().getValidPath(fromQ, fromR, toQ, toR);
         int sFromQ = fromQ;
@@ -163,9 +153,18 @@ public class HiveGame implements Hive {
      */
     @Override
     public boolean isWinner(Player player) {
-        for(HiveCell hiveCell : hiveBoard.getHiveCells()){
-            for (HivePlayerTile playerTile: hiveCell.getPlayerTilesAtCell()){
-                if (playerTile.getPlayer().getPlayerColor().equals(getOtherPlayerColor(player)) && playerTile.getInsect().getTile().equals(Tile.QUEEN_BEE) && hiveCell.getTopNeighbourPlayerTiles().size() == 6) return true;
+        Iterator it = hiveBoard.getBoard().keySet().iterator();
+        while (it.hasNext()) {
+            HiveLocation location = (HiveLocation) it.next();
+            Stack<HivePlayerTile> tilesAtLocation = hiveBoard.getBoard().get(location);
+            int neighbourTiles = 0;
+            for (HivePlayerTile playerTile: tilesAtLocation){
+                if (playerTile.getPlayer().getPlayerColor().equals(getOtherPlayerColor(player)) && playerTile.getInsect().getTile().equals(Tile.QUEEN_BEE)){
+                    for(HiveLocation neighbour: hiveBoard.getNeighbourLocations(location.getQ(), location.getR())){
+                        if (hiveBoard.getPlayerTilesAt(neighbour.getQ(), neighbour.getR()).size() > 0) neighbourTiles++;
+                    }
+                    if (neighbourTiles == 6) return true;
+                }
             }
         }
         return false;

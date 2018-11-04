@@ -25,4 +25,23 @@ class HiveLocationTest {
         // we verwachten dus dat l2 in test zit
         assertTrue(test.contains(l2));
     }
+
+    @Test
+    void testHashCode(){
+        HiveLocation l1 = new HiveLocation(0,0);
+        HiveLocation l2 = new HiveLocation(0,0);
+        HiveLocation l3 = new HiveLocation(-1,0);
+        HiveLocation l4 = new HiveLocation(-1,0);
+        HiveLocation l5 = new HiveLocation(0,-1);
+        HiveLocation l6 = new HiveLocation(0,-1);
+        // Moet equal zijn
+        assertTrue(l1.hashCode() == l2.hashCode());
+        assertTrue(l3.hashCode() == l4.hashCode());
+        assertTrue(l3.hashCode() == l4.hashCode());
+        // Verwachten we niet equal
+        assertTrue(l3.hashCode() != l1.hashCode());
+        assertTrue(l1.hashCode() != l5.hashCode());
+        assertTrue(l5.hashCode() != l3.hashCode());
+        assertTrue(l5.hashCode() != l2.hashCode());
+    }
 }

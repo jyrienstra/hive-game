@@ -1,7 +1,6 @@
 package model;
 
 import model.Tile.*;
-import model.Tile.Exceptions.IllegalMoveQueenBee;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
@@ -72,7 +71,7 @@ class HiveGameTest {
         final Field field = hiveGame.getClass().getDeclaredField("hiveBoard");
         field.setAccessible(true);
         HiveBoard hiveBoard = (HiveBoard) field.get(hiveGame);
-        assertTrue(hiveBoard.getHiveCells().size() == 0);
+        assertTrue(hiveBoard.getBoard().isEmpty());
     }
 
     //Tijdens zijn beurt kan een speler een steen spelen, een steen verplaatsen of passen; daarna is de tegenstander aan de beurt.
@@ -107,13 +106,13 @@ class HiveGameTest {
         HiveInsectBeetle beetle = new HiveInsectBeetle(hiveGame);
         HiveInsectSoldierAnt soldierAnt = new HiveInsectSoldierAnt(hiveGame);
         HiveInsectGrasshopper grasshopper = new HiveInsectGrasshopper(hiveGame);
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.WHITE), queenBee), 0, 0));
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), grasshopper), -1, 0));
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), soldierAnt), -1, 1));
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), beetle), 0, 1));
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.WHITE), beetle), 1, 0));
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.WHITE), beetle), 1, -1));
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), spider), 0, -2)); // deze is fout
+        hiveBoard.addPlayerTile(new HivePlayerTile(new HivePlayer(Hive.Player.WHITE), queenBee), 0, 0);
+        hiveBoard.addPlayerTile(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), grasshopper), -1, 0);
+        hiveBoard.addPlayerTile(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), soldierAnt), -1, 1);
+        hiveBoard.addPlayerTile(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), beetle), 0, 1);
+        hiveBoard.addPlayerTile(new HivePlayerTile(new HivePlayer(Hive.Player.WHITE), beetle), 1, 0);
+        hiveBoard.addPlayerTile(new HivePlayerTile(new HivePlayer(Hive.Player.WHITE), beetle), 1, -1);
+        hiveBoard.addPlayerTile(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), spider), 0, -2); // deze is fout
         assertTrue(!hiveGame.isWinner(Hive.Player.WHITE));
         assertTrue(!hiveGame.isWinner(Hive.Player.BLACK));
     }
@@ -129,13 +128,13 @@ class HiveGameTest {
         HiveInsectBeetle beetle = new HiveInsectBeetle(hiveGame);
         HiveInsectSoldierAnt soldierAnt = new HiveInsectSoldierAnt(hiveGame);
         HiveInsectGrasshopper grasshopper = new HiveInsectGrasshopper(hiveGame);
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.WHITE), queenBee), 0, 0));
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), grasshopper), 0, -1));
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), soldierAnt), 1, -1));
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), beetle), 1, 0));
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.WHITE), beetle), -1, 0));
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.WHITE), beetle), 0, 1));
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), spider), -1, 1));
+        hiveBoard.addPlayerTile(new HivePlayerTile(new HivePlayer(Hive.Player.WHITE), queenBee), 0, 0);
+        hiveBoard.addPlayerTile(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), grasshopper), 0, -1);
+        hiveBoard.addPlayerTile(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), soldierAnt), 1, -1);
+        hiveBoard.addPlayerTile(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), beetle), 1, 0);
+        hiveBoard.addPlayerTile(new HivePlayerTile(new HivePlayer(Hive.Player.WHITE), beetle), -1, 0);
+        hiveBoard.addPlayerTile(new HivePlayerTile(new HivePlayer(Hive.Player.WHITE), beetle), 0, 1);
+        hiveBoard.addPlayerTile(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), spider), -1, 1);
         assertTrue(!hiveGame.isWinner(Hive.Player.WHITE));
         assertTrue(hiveGame.isWinner(Hive.Player.BLACK));
     }
@@ -153,13 +152,15 @@ class HiveGameTest {
         HiveInsectBeetle beetle = new HiveInsectBeetle(hiveGame);
         HiveInsectSoldierAnt soldierAnt = new HiveInsectSoldierAnt(hiveGame);
         HiveInsectGrasshopper grasshopper = new HiveInsectGrasshopper(hiveGame);
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), queenBee), 0,0));
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), grasshopper), 0, -1));
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), soldierAnt), 1, -1));
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), beetle), 1, 0));
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.WHITE), beetle), -1, 0));
-        hiveBoard.addHiveCell(new HiveCell(0, 1)); // geen player tile in deze
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), spider), -1, 1));
+        hiveBoard.addPlayerTile(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), queenBee), 0,0);
+        hiveBoard.addPlayerTile(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), grasshopper), 0, -1);
+        hiveBoard.addPlayerTile(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), soldierAnt), 1, -1);
+        hiveBoard.addPlayerTile(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), beetle), 1, 0);
+        hiveBoard.addPlayerTile(new HivePlayerTile(new HivePlayer(Hive.Player.WHITE), beetle), -1, 0);
+        HivePlayerTile tileToRemove = new HivePlayerTile(new HivePlayer(Hive.Player.WHITE), beetle);
+        hiveBoard.addPlayerTile(tileToRemove, 0, 1);
+        hiveBoard.removePlayerTile(tileToRemove, 0, 1); // geen tile meer in locatie 0,1
+        hiveBoard.addPlayerTile(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), spider), -1, 1);
         assertTrue(!hiveGame.isWinner(Hive.Player.WHITE));
         assertTrue(!hiveGame.isWinner(Hive.Player.BLACK));
     }
@@ -178,18 +179,18 @@ class HiveGameTest {
         HiveInsectBeetle beetle = new HiveInsectBeetle(hiveGame);
         HiveInsectSoldierAnt soldierAnt = new HiveInsectSoldierAnt(hiveGame);
         HiveInsectGrasshopper grasshopper = new HiveInsectGrasshopper(hiveGame);
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.WHITE), queenBee), 0, 0));
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), grasshopper), -1, 0));
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), soldierAnt), -1, 1));
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.WHITE), beetle), 1, 0));
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.WHITE), beetle), 1, -1));
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), spider), 0, -1));
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), queenBee), 0, 1));
+        hiveBoard.addPlayerTile(new HivePlayerTile(new HivePlayer(Hive.Player.WHITE), queenBee), 0, 0);
+        hiveBoard.addPlayerTile(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), grasshopper), -1, 0);
+        hiveBoard.addPlayerTile(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), soldierAnt), -1, 1);
+        hiveBoard.addPlayerTile(new HivePlayerTile(new HivePlayer(Hive.Player.WHITE), beetle), 1, 0);
+        hiveBoard.addPlayerTile(new HivePlayerTile(new HivePlayer(Hive.Player.WHITE), beetle), 1, -1);
+        hiveBoard.addPlayerTile(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), spider), 0, -1);
+        hiveBoard.addPlayerTile(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), queenBee), 0, 1);
         assertTrue(!hiveGame.isDraw());
         // Make the white player also a winner by surrounding black's queen bee
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.WHITE), spider), 1, 1));
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), beetle), 0, 2));
-        hiveBoard.addHiveCell(new HiveCell(new HivePlayerTile(new HivePlayer(Hive.Player.WHITE), grasshopper), -1, 2));
+        hiveBoard.addPlayerTile(new HivePlayerTile(new HivePlayer(Hive.Player.WHITE), spider), 1, 1);
+        hiveBoard.addPlayerTile(new HivePlayerTile(new HivePlayer(Hive.Player.BLACK), beetle), 0, 2);
+        hiveBoard.addPlayerTile(new HivePlayerTile(new HivePlayer(Hive.Player.WHITE), grasshopper), -1, 2);
         // Beide spelers zijn dus nu een winnaar dus we verwachten een draw
         assertTrue(hiveGame.isDraw());
     }
@@ -410,14 +411,11 @@ class HiveGameTest {
     @Test
     void testIfFirstTurnFunctionHasExpectedResult() throws Hive.IllegalMove {
         HiveGame hiveGame = new HiveGame();
-        assertTrue(hiveGame.getBoard().firstTurn());
-        hiveGame.getBoard().addHiveCell(new HiveCell(1, 1));
-        hiveGame.getBoard().addHiveCell(new HiveCell(2, 1));
-        hiveGame.getBoard().addHiveCell(new HiveCell(2, -2));
-        assertTrue(hiveGame.getBoard().firstTurn());
+        assertTrue(hiveGame.getBoard().isFirstTurn() == true);
         hiveGame.play(Hive.Tile.QUEEN_BEE, 0,0); // wit
+        assertTrue(hiveGame.getBoard().isFirstTurn() == true);
         hiveGame.play(Hive.Tile.QUEEN_BEE, 1, 0); // zwart
-        assertTrue(hiveGame.getBoard().firstTurn() == false);
+        assertTrue(hiveGame.getBoard().isFirstTurn() == false);
     }
 
     @Test

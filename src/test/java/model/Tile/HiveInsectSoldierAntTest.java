@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Stack;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -55,15 +56,14 @@ class HiveInsectSoldierAntTest {
         ArrayList<HiveLocation> validPath = hiveInsectSoldierAnt.getValidPath(2,0,-1,0);
         for(int i = 0; i < validPath.size() - 1; i++){
             HiveLocation l = validPath.get(i);
-            HiveCell cell = hiveGame.getBoard().getCellAt(l.getQ(), l.getR());
-            assertTrue(cell.getPlayerTilesAtCell().size() == 0);
+            Stack<HivePlayerTile> tilesAtLocation = hiveGame.getBoard().getPlayerTilesAt(l.getQ(), l.getR());
+            assertTrue(tilesAtLocation.size() == 0);
         }
         ArrayList<HiveLocation> validPath2 = hiveInsectSoldierAnt.getValidPath(2,0,1,-1);
         for(int i = 0; i < validPath2.size(); i++){
             HiveLocation l = validPath2.get(i);
-            HiveCell cell = hiveGame.getBoard().getCellAt(l.getQ(), l.getR());
-            System.out.println(l.getQ() + "," + l.getR());
-            assertTrue(cell.getPlayerTilesAtCell().size() == 0);
+            Stack<HivePlayerTile> tilesAtLocation = hiveGame.getBoard().getPlayerTilesAt(l.getQ(), l.getR());
+            assertTrue(tilesAtLocation.size() == 0);
         }
     }
 
@@ -98,11 +98,11 @@ class HiveInsectSoldierAntTest {
         hiveGame.play(Hive.Tile.SOLDIER_ANT, 2, 1); // zwart
         hiveGame.play(Hive.Tile.BEETLE, 1, 0); // wit
         // Soldier ant kan onbeperkt stappen en dus verschuiven zonder de tiles te onderbreken
-        // Alleen als het pad zo gaat van 2,1 -> 2,0 -> 1,1
+        // bv het pad kan van 2,1 -> 2,0 -> 1,1
         HiveInsectSoldierAnt hiveInsectSoldierAnt = new HiveInsectSoldierAnt(hiveGame);
         ArrayList<HiveLocation> validPath = hiveInsectSoldierAnt.getValidPath(2,1,1,1);
-        assertTrue(validPath.size() == 2);
-        assertTrue(validPath.get(0).equals(new HiveLocation(2,0)));
-        assertTrue(validPath.get(1).equals(new HiveLocation(1,1)));
+        assertTrue(validPath.size() > 1);
+        assertTrue(validPath.contains(new HiveLocation(2,0)));
+        assertTrue(validPath.contains(new HiveLocation(1,1)));
     }
 }
