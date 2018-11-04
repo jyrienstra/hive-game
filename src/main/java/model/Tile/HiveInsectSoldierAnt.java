@@ -25,11 +25,6 @@ public class HiveInsectSoldierAnt implements HiveInsect {
 
         if (validPath == null) throw new IllegalMoveSoldierAnt("Could not find a valid path for the Soldier Ant to Q = " + toQ + " and R = " + toR);
 
-
-        for(HiveLocation location: validPath){
-            System.out.println("pad"+ location.getQ() +"," + location.getR());
-        }
-
         return validPath;
     }
 
@@ -74,7 +69,6 @@ public class HiveInsectSoldierAnt implements HiveInsect {
                 if (path.contains(new HiveLocation(currToQ, currToR))){
                     path.remove(new HiveLocation(currToQ, currToR));
                     copyBoard.undoMove(currFromQ, currFromR, currToQ, currToR);
-                    System.out.println();
                 }
             }
         }

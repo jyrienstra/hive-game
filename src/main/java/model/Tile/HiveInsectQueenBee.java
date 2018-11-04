@@ -45,7 +45,6 @@ public class HiveInsectQueenBee implements HiveInsect {
 
     public ArrayList<HiveLocation> findValidPath(int currFromQ, int currFromR, int currToQ, int currToR, int endQ, int endR, int maxCellMove, ArrayList<HiveLocation> path) {
         if (hiveGame.getBoard().isValidShift(currFromQ, currFromR, currToQ, currToR)){
-            System.out.println(currFromQ + "," + currFromR + "to" + currToQ + "," +currToR);
             path.add(new HiveLocation(currToQ, currToR)); // Simulate shift
             currFromQ = currToQ;
             currFromR = currToR;

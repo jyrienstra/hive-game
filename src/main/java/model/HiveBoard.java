@@ -177,7 +177,6 @@ public class HiveBoard {
         int amountOfNeighbourTilesForToCellAndFromCell = 0;
         ArrayList<HiveLocation> fromNeighbourLocations = getNeighbourLocations(fromQ, fromR);
         ArrayList<HiveLocation> toNeighbourLocations = getNeighbourLocations(toQ, toR);
-        System.out.println("from" + fromQ + "," + fromR + "to" + toQ + "," + toR);
         if (!this.isNeighbour(fromQ, fromR, toQ, toR)) return false; // We kunnen niet schuiven sinds we de steen proberen te verplaatsen naar een vak die niet grenst aan onze oorsproonkelijke locatie
         for(HiveLocation a : fromNeighbourLocations){
             for(HiveLocation b: toNeighbourLocations){
@@ -243,20 +242,15 @@ public class HiveBoard {
      * @return boolean hasNeighbourTile
      */
     public boolean hasNeighbourPlayerTileBesidesCoordinate(int q, int r){
-        System.out.println("start " + q + "," + r);
         ArrayList<HiveLocation> neighbours = getNeighbourLocations(q, r);
 
         Iterator it = board.keySet().iterator();
         while(it.hasNext()){
             HiveLocation location = (HiveLocation) it.next();
-            System.out.println("In bord:" + location.getQ() + "," + location.getR());
         }
 
         for(HiveLocation neighbour : neighbours){
-            System.out.println("neighbour" + neighbour.getQ() + "," + neighbour.getR());
             if (board.containsKey(neighbour)){
-                //@todo bug vind locatie niet
-                System.out.println(q + "," + r + "neighbour is " + neighbour.getQ() + "," + neighbour.getR());
                 Stack<HivePlayerTile> tilesAtNeighbour;
                 tilesAtNeighbour = board.get(neighbour);
                 if (tilesAtNeighbour.size() > 0) return true;
@@ -317,9 +311,7 @@ public class HiveBoard {
             if (getPlayerTilesAt(neighbourFrom.getQ(), neighbourFrom.getR()).size() > 0) {
                 // Waar van de to cell niet de buur isot
                 if (toQ != neighbourFrom.getQ() || toR != neighbourFrom.getR()) {
-                    System.out.println("expect" + neighbourFrom.getQ() + "," + neighbourFrom.getR());
                     if(!areCellsLinked(fromLocation, toLocation, neighbourFrom, new ArrayList<>())){
-                        System.out.println("hier komen we nooit");
                         // Als één van de buren niet verbonden is met de toCell return false
                         return false;
                     }
@@ -335,7 +327,6 @@ public class HiveBoard {
      * board.
      */
     private boolean areCellsLinked(HiveLocation locationToMove, HiveLocation toLocation, HiveLocation currentLocation, ArrayList<HiveLocation> visited){
-        System.out.println(currentLocation.getQ() + "," + currentLocation.getR());
         visited.add(currentLocation);
 
         if (currentLocation.getQ() == toLocation.getQ() && currentLocation.getR() == toLocation.getR()){
@@ -348,9 +339,7 @@ public class HiveBoard {
 
 
         for (HiveLocation n: getNeighbourLocations(currentLocation.getQ(), currentLocation.getR())){
-            System.out.println("n: " + n.getQ() + "," + n.getR());
             if (!visited.contains(n)){
-                System.out.println("b: " + n.getQ() + "," + n.getR()) ;
                 if (areCellsLinked(locationToMove, toLocation, n, visited)) return true;
             }
         }
@@ -395,7 +384,6 @@ public class HiveBoard {
         if (tQ == fQ && tR == fR + 1) return Direction.RIGHT_DOWN;
         if (tQ == fQ && tR == fR - 1) return Direction.LEFT_UP;
         if (tQ == fQ + 1 && tR == fR - 1) return Direction.RIGHT_UP;
-        System.out.println(fQ + "," + fR + " > " + tQ + ","+ tR);
         return null;
     }
 
